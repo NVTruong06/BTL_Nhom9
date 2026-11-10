@@ -30,7 +30,7 @@
         {
             label1 = new Label();
             panel1 = new Panel();
-            panel6 = new Panel();
+            pictureBox1 = new PictureBox();
             panel5 = new Panel();
             panel4 = new Panel();
             label2 = new Label();
@@ -56,6 +56,7 @@
             textBox1 = new TextBox();
             dataGridView1 = new DataGridView();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panel5.SuspendLayout();
             panel4.SuspendLayout();
             panel2.SuspendLayout();
@@ -76,21 +77,22 @@
             // 
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             panel1.BackColor = Color.FromArgb(254, 254, 254);
-            panel1.Controls.Add(panel6);
+            panel1.Controls.Add(pictureBox1);
             panel1.Controls.Add(panel5);
             panel1.Location = new Point(20, 96);
             panel1.Name = "panel1";
             panel1.Size = new Size(354, 484);
             panel1.TabIndex = 10;
+            panel1.Paint += panel1_Paint;
             // 
-            // panel6
+            // pictureBox1
             // 
-            panel6.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            panel6.BackColor = Color.Silver;
-            panel6.Location = new Point(98, 17);
-            panel6.Name = "panel6";
-            panel6.Size = new Size(160, 160);
-            panel6.TabIndex = 15;
+            pictureBox1.Location = new Point(103, 40);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(125, 117);
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox1.TabIndex = 12;
+            pictureBox1.TabStop = false;
             // 
             // panel5
             // 
@@ -384,6 +386,7 @@
             Size = new Size(900, 600);
             Load += UC_MonAn_Load;
             panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             panel5.ResumeLayout(false);
             panel5.PerformLayout();
             panel4.ResumeLayout(false);
@@ -423,6 +426,6 @@
         private Label label5;
         private Label label4;
         private Label label3;
-        private Panel panel6;
+        private PictureBox pictureBox1;
     }
 }

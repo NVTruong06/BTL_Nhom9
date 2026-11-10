@@ -1,4 +1,5 @@
 ﻿using LTTQ_BTL.Dao;
+using LTTQ_BTL.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,6 +7,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace LTTQ_BTL.Views.MonAn
 {
@@ -131,6 +133,8 @@ namespace LTTQ_BTL.Views.MonAn
             label13.Text = dt3.Rows[0][5].ToString();
             label14.Text = dt3.Rows[0][6].ToString();
 
+            pictureBox1.ImageLocation = dt3.Rows[0][7].ToString();
+
             label2.TextAlign = ContentAlignment.TopCenter;
         }
 
@@ -139,6 +143,11 @@ namespace LTTQ_BTL.Views.MonAn
             FormMain form = (FormMain)this.FindForm();
             UC_ThemMonAn uc = new UC_ThemMonAn();
             form.HienThiTrang(uc);
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

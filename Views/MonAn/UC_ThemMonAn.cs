@@ -26,7 +26,7 @@ namespace LTTQ_BTL.Views.MonAn
         private void TinhGia()
         {
             decimal gia = 0;
-            foreach(DataGridViewRow row in dataGridView1.Rows)
+            foreach (DataGridViewRow row in dataGridView1.Rows)
             {
                 gia += decimal.Parse(row.Cells[5].Value.ToString()) * decimal.Parse(row.Cells[3].Value.ToString());
             }
@@ -234,13 +234,13 @@ namespace LTTQ_BTL.Views.MonAn
                 return;
             }
 
-            if(textBox1.Text == "" || textBox2.Text == "")
+            if (textBox1.Text == "" || textBox2.Text == "")
             {
                 return;
             }
 
 
-            
+
             string thuMuc = @"D:\Microsoft VS Code\LTTQ\LTTQ_BTL\Resources\img\";
             string tenAnh = textBox1.Text.Trim() + Path.GetExtension(anhGoc);
 
@@ -267,11 +267,18 @@ namespace LTTQ_BTL.Views.MonAn
             file.Title = "Them anh";
             file.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
 
-            if(file.ShowDialog() == DialogResult.OK)
+            if (file.ShowDialog() == DialogResult.OK)
             {
                 anhGoc = file.FileName;
                 pictureBox1.ImageLocation = anhGoc;
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            FormMain form = (FormMain)this.FindForm();
+            UC_MonAn uc = new UC_MonAn();
+            form.HienThiTrang(uc);
         }
     }
 }
