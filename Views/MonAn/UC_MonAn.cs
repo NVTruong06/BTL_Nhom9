@@ -111,7 +111,7 @@ namespace LTTQ_BTL.Views.MonAn
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            
+
         }
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
@@ -132,6 +132,13 @@ namespace LTTQ_BTL.Views.MonAn
             label14.Text = dt3.Rows[0][6].ToString();
 
             label2.TextAlign = ContentAlignment.TopCenter;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            FormMain form = (FormMain)this.FindForm();
+            UC_ThemMonAn uc = new UC_ThemMonAn();
+            form.HienThiTrang(uc);
         }
     }
 }

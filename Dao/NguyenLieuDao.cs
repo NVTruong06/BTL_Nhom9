@@ -114,5 +114,76 @@ namespace LTTQ_BTL.Dao
             }
             return dt;
         }
+        //bat dau dung stored procedure
+        public DataTable DSNguyenLieuThemMonAn(string ten)
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = db.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand("sp_TimKiemNguyenLieu", conn);
+
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("Ten", ten);
+                cmd.Parameters.AddWithValue("CongDung", "");
+                cmd.Parameters.AddWithValue("CCD", "");
+
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+
+                adapter.Fill(dt);
+            }
+            return dt.DefaultView.ToTable(
+                false,
+                "MaNguyenLieu",
+                "TenNguyenLieu",
+                "DonViTinh",
+                "SoLuong",
+                "DonGiaBan"
+            );
+        }
+
+        public DataTable LayNguyenLieuMonAN(string ma)
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = db.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand("sp_LayNguyenLieuTheoMa", conn);
+
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("MaNguyenLieu", ma);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+
+                adapter.Fill(dt);
+            }
+            return dt.DefaultView.ToTable(
+                false,
+                "MaNguyenLieu",
+                "TenNguyenLieu",
+                "DonViTinh",
+                "DonGiaBan"
+            );
+        }
+
+        public decimal LaySoLuong(string ma)
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = db.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand("sp_LayNguyenLieuTheoMa", conn);
+
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("MaNguyenLieu", ma);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+
+                adapter.Fill(dt);
+            }
+            DataRow row = dt.Rows[0];
+            decimal.TryParse(row["SoLuong"].ToString(), out decimal sl);
+            return sl;
+        }
     }
 }
