@@ -9,7 +9,7 @@ namespace QuanlyNhaHang.DAL
     {
 
         private static string connectionString = 
-            @"Data Source=localhost\SQLEXPRESS;
+            @"Data Source=localhost;
               Initial Catalog=QuanLyNhaHang;
               Integrated Security=True;
               TrustServerCertificate=True;";

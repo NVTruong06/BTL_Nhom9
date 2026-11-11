@@ -8,7 +8,7 @@ namespace LTTQ_BTL.Dal
     public class Database
     {
         private string connStr =
-            @"Data Source=localhost\SQLEXPRESS;
+            @"Data Source=localhost;
               Initial Catalog=QuanLyNhaHang;
               Integrated Security=True;
               TrustServerCertificate=True;";

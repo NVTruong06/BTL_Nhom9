@@ -1,20 +1,22 @@
-﻿using QuanLyNhaHang.DAL;
+﻿using LTTQ_BTL.Dal;
+using QuanLyNhaHang.DAL;
 using System;
 using System.Data;
 using System.Drawing;
+using System.Security.Policy;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
-namespace QuanLyNhaHang
+namespace LTTQ_BTL.Reports.BaoCao
 {
-    public partial class ucBaoCao : UserControl
+    public partial class UC_BaoCao : UserControl
     {
-        public ucBaoCao()
+        public UC_BaoCao()
         {
             InitializeComponent();
         }
 
-        private void ucBaoCao_Load(object sender, EventArgs e)
+        private void UC_BaoCao_Load(object sender, EventArgs e)
         {
             try
             {
@@ -46,21 +48,28 @@ namespace QuanLyNhaHang
                 cboLoaiBaoCao.Items.Add("Báo cáo nhân sự");
                 cboLoaiBaoCao.SelectedIndex = 0;
 
+                cboNhanVien.DataSource = NhanVienDAL.LayDanhSachNhanVien();
                 cboNhanVien.DisplayMember = "TenNhanVien";
                 cboNhanVien.ValueMember = "MaNhanVien";
-                cboNhanVien.DataSource = BaoCaoDAL.LayDanhSachNhanVien();
                 cboNhanVien.SelectedIndex = -1;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                MessageBox.Show("Lỗi load ComboBox nhân viên: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             try
             {
-                dgvBaoCao.DataSource = BaoCaoDAL.LayDanhSachHoaDonChiTiet();
+                DateTime tuNgay = dtpTuNgay.Value;
+                DateTime denNgay = dtpDenNgay.Value;
+                string maNV = cboNhanVien.SelectedValue?.ToString();
+
+                DataTable dt = BaoCaoDAL.LayDanhSachHoaDonChiTiet(tuNgay, denNgay, maNV);
+                dgvBaoCao.DataSource = dt;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                MessageBox.Show("Lỗi tải danh sách chi tiết: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -83,7 +92,8 @@ namespace QuanLyNhaHang
         private void LoadChartDoanhThu6Thang()
         {
             chartDoanhThu6Thang.Series.Clear();
-            var series = chartDoanhThu6Thang.Series.Add("Doanh thu");
+
+            var series = chartDoanhThu6Thang.Series.Add("DoanhThu");
             series.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Column;
 
             DateTime currentDate = DateTime.Now;
@@ -96,8 +106,7 @@ namespace QuanLyNhaHang
 
                 decimal doanhThu = BaoCaoDAL.LayDoanhThuTheoThang(thang, nam);
 
-                int pointIndex = series.Points.AddXY($"Tháng {thang}", doanhThu);
-
+                series.Points.AddXY($"Tháng {thang}/{nam}", doanhThu);
             }
         }
 
@@ -133,22 +142,26 @@ namespace QuanLyNhaHang
                 string maNV = cboNhanVien.SelectedValue?.ToString();
 
                 DataTable dt = BaoCaoDAL.LayDanhSachHoaDonChiTiet(tuNgay, denNgay, maNV);
+
                 dgvBaoCao.DataSource = dt;
 
-                if (dgvBaoCao.Columns["MaHoaDonNhap"] != null)
-                    dgvBaoCao.Columns["MaHoaDonNhap"].HeaderText = "Mã HĐ Nhập";
+                if (dgvBaoCao.Columns["MaHD"] != null)
+                    dgvBaoCao.Columns["MaHD"].HeaderText = "Mã HĐ Nhập";
 
-                if (dgvBaoCao.Columns["NgayNhap"] != null)
+                if (dgvBaoCao.Columns["NgayLap"] != null)
                 {
-                    dgvBaoCao.Columns["NgayNhap"].HeaderText = "Ngày Nhập";
-                    dgvBaoCao.Columns["NgayNhap"].DefaultCellStyle.Format = "dd/MM/yyyy";
+                    dgvBaoCao.Columns["NgayLap"].HeaderText = "Ngày Nhập";
+                    dgvBaoCao.Columns["NgayLap"].DefaultCellStyle.Format = "dd/MM/yyyy";
                 }
 
                 if (dgvBaoCao.Columns["MaNhanVien"] != null)
                     dgvBaoCao.Columns["MaNhanVien"].HeaderText = "Mã Nhân Viên";
 
-                if (dgvBaoCao.Columns["MaNhaCungCap"] != null)
-                    dgvBaoCao.Columns["MaNhaCungCap"].HeaderText = "Mã NCC";
+                if (dgvBaoCao.Columns["TenNhanVien"] != null)
+                    dgvBaoCao.Columns["TenNhanVien"].HeaderText = "Tên Nhân Viên";
+
+                if (dgvBaoCao.Columns["TenKhachHang"] != null)
+                    dgvBaoCao.Columns["TenKhachHang"].HeaderText = "Khách hàng / NCC";
 
                 if (dgvBaoCao.Columns["TongTien"] != null)
                 {
@@ -166,7 +179,11 @@ namespace QuanLyNhaHang
 
         private void btnTaoBaoCao_Click(object sender, EventArgs e)
         {
+            LoadDashboardOverview();
+            LoadChartDoanhThu6Thang();
+            LoadChartTyLeGioiTinh();
             LoadDanhSachChiTiet();
+
             MessageBox.Show("Đã tạo báo cáo mới dựa trên điều kiện lọc!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -183,6 +200,7 @@ namespace QuanLyNhaHang
 
             MessageBox.Show("Đã làm mới dữ liệu báo cáo!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
         private void lblTongSoNV_Click(object sender, EventArgs e)
         {
 
@@ -191,6 +209,11 @@ namespace QuanLyNhaHang
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void cboNhanVien_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadDanhSachChiTiet();
         }
     }
 }
