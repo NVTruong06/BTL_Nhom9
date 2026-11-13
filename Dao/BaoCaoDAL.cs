@@ -1,101 +1,240 @@
-﻿using QuanlyNhaHang.DAL;
-using QuanLyNhaHang.DAL;
+﻿using Microsoft.Data.SqlClient;
+using QuanlyNhaHang.DAL;
 using System;
 using System.Data;
-using System.Data.SqlClient;
 
 namespace LTTQ_BTL.Dal
 {
     public class BaoCaoDAL
     {
-        public static int LayTongSoNhanVien()
-        {
-            string query = "SELECT COUNT(*) FROM NhanVien";
-            DataTable dt = DatabaseHelper.ExecuteQuery(query);
-            return dt.Rows.Count > 0 ? Convert.ToInt32(dt.Rows[0][0]) : 0;
-        }
-
-        public static int LayTongSoKhachHang()
-        {
-            string query = "SELECT COUNT(*) FROM Khach";
-            DataTable dt = DatabaseHelper.ExecuteQuery(query);
-            return dt.Rows.Count > 0 ? Convert.ToInt32(dt.Rows[0][0]) : 0;
-        }
-
         public static decimal LayDoanhThuThangHienTai()
         {
-            string query = "SELECT ISNULL(SUM(TongTien), 0) FROM HoaDonNhap WHERE MONTH(NgayNhap) = MONTH(GETDATE()) AND YEAR(NgayNhap) = YEAR(GETDATE())";
-            DataTable dt = DatabaseHelper.ExecuteQuery(query);
-            return dt.Rows.Count > 0 ? Convert.ToDecimal(dt.Rows[0][0]) : 0;
+            decimal doanhThu = 0;
+            string query = @"
+                SELECT ISNULL(SUM(TongTien), 0) AS DoanhThu 
+                FROM PhieuDatBan 
+                WHERE MONTH(NgayDung) = MONTH(GETDATE()) 
+                  AND YEAR(NgayDung) = YEAR(GETDATE())
+                  AND NgayDung <= GETDATE()";
+
+            Database db = new Database();
+            using (SqlConnection conn = db.GetConnection())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    object result = cmd.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                    {
+                        doanhThu = Convert.ToDecimal(result);
+                    }
+                }
+            }
+            return doanhThu;
         }
 
-        public static DataTable LayDoanhThu6ThangGanNhat()
+        public static DataTable LayDoanhThu6Thang()
         {
-            string query = "SELECT TOP 6 MONTH(NgayNhap) AS Thang, YEAR(NgayNhap) AS Nam, SUM(TongTien) AS DoanhThu " +
-                           "FROM HoaDonNhap " +
-                           "GROUP BY YEAR(NgayNhap), MONTH(NgayNhap) " +
-                           "ORDER BY YEAR(NgayNhap) DESC, MONTH(NgayNhap) DESC";
+            DataTable dt = new DataTable();
+            string query = @"
+                SELECT 
+                    MONTH(NgayDung) AS Thang, 
+                    YEAR(NgayDung) AS Nam, 
+                    SUM(TongTien) AS DoanhThu
+                FROM PhieuDatBan
+                WHERE NgayDung <= GETDATE() 
+                  AND NgayDung >= DATEADD(month, -6, GETDATE())
+                GROUP BY YEAR(NgayDung), MONTH(NgayDung)
+                ORDER BY Nam, Thang";
 
-            DataTable dt = DatabaseHelper.ExecuteQuery(query);
-            if (dt != null && dt.Rows.Count > 0)
+            Database db = new Database();
+            using (SqlConnection conn = db.GetConnection())
             {
-                DataTable dtReversed = dt.Clone();
-                for (int i = dt.Rows.Count - 1; i >= 0; i--)
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    dtReversed.ImportRow(dt.Rows[i]);
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+                        adapter.Fill(dt);
+                    }
                 }
-                return dtReversed;
             }
             return dt;
         }
 
-        public static DataTable LayTyleGioiTinhKhach()
+        public static DataTable LayTyLeGioiTinhTheoDSKhach()
         {
-            string query = "SELECT GioiTinh, COUNT(*) AS SoLuong FROM Khach GROUP BY GioiTinh";
-            return DatabaseHelper.ExecuteQuery(query);
+            DataTable dt = new DataTable();
+            string query = @"
+                SELECT 
+                    ISNULL(GioiTinh, N'Khác') AS GioiTinh, 
+                    COUNT(*) AS SoLuong
+                FROM Khach
+                GROUP BY GioiTinh";
+
+            Database db = new Database();
+            using (SqlConnection conn = db.GetConnection())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+                        adapter.Fill(dt);
+                    }
+                }
+            }
+            return dt;
+        }
+
+        public static DataTable LayDanhSachHoaDonNhap()
+        {
+            DataTable dt = new DataTable();
+            string query = "SELECT * FROM HoaDonNhap";
+
+            Database db = new Database();
+            using (SqlConnection conn = db.GetConnection())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+                        adapter.Fill(dt);
+                    }
+                }
+            }
+            return dt;
+        }
+
+        public static DataTable LayDanhSachPhieuDatBan()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string query = @"SELECT * FROM PhieuDatBan"; 
+                dt = DatabaseHelper.ExecuteQuery(query);
+            }
+            catch (Exception ex)
+            {
+            }
+            return dt;
         }
 
         public static DataTable LayDanhSachHoaDonChiTiet(DateTime tuNgay, DateTime denNgay, string maNV)
         {
-            string tu = tuNgay.ToString("yyyy-MM-dd 00:00:00");
-            string den = denNgay.ToString("yyyy-MM-dd 23:59:59");
-
-            string query = "SELECT HDN.MaHoaDonNhap AS MaHD, HDN.NgayNhap AS NgayLap, NV.MaNhanVien, NV.TenNhanVien, 'Khách lẻ' AS TenKhachHang, HDN.TongTien " +
-                           "FROM HoaDonNhap HDN " +
-                           "LEFT JOIN NhanVien NV ON HDN.MaNhanVien = NV.MaNhanVien " +
-                           $"WHERE HDN.NgayNhap BETWEEN '{tu}' AND '{den}'";
+            string query = @"SELECT 
+                        hd.MaHoaDonNhap, 
+                        hd.NgayNhap, 
+                        hd.MaNhanVien, 
+                        nv.TenNhanVien, 
+                        ncc.MaNhaCungCap AS TenKhachHang, 
+                        hd.TongTien 
+                     FROM HoaDonNhap hd
+                     LEFT JOIN NhanVien nv ON hd.MaNhanVien = nv.MaNhanVien
+                     LEFT JOIN NhaCungCap ncc ON hd.MaNhaCungCap = ncc.MaNhaCungCap
+                     WHERE hd.NgayNhap >= @TuNgay AND hd.NgayNhap <= @DenNgay";
 
             if (!string.IsNullOrEmpty(maNV))
             {
-                query += $" AND HDN.MaNhanVien = '{maNV}'";
+                query += " AND hd.MaNhanVien = @MaNV";
             }
 
-    public static DataTable LayDanhSachNhanVien()
+            List<SqlParameter> listParams = new List<SqlParameter>()
     {
-        string query = "SELECT MaNhanVien, TenNhanVien FROM NhanVien";
-            return DatabaseHelper.ExecuteQuery(query);
+        new SqlParameter("@TuNgay", tuNgay),
+        new SqlParameter("@DenNgay", denNgay)
+    };
+
+            if (!string.IsNullOrEmpty(maNV))
+            {
+                listParams.Add(new SqlParameter("@MaNV", maNV));
+            }
+
+            DataTable dt = DatabaseHelper.ExecuteQuery(query, listParams.ToArray());
+
+            return dt;
         }
 
         public static decimal LayDoanhThuTheoThang(int thang, int nam)
         {
-            decimal doanhThu = 0;
-
-            string query = $"SELECT ISNULL(SUM(TongTien), 0) FROM HoaDonNhap WHERE MONTH(NgayNhap) = {thang} AND YEAR(NgayNhap) = {nam}";
-
             try
             {
-                DataTable dt = DatabaseHelper.ExecuteQuery(query);
-                if (dt != null && dt.Rows.Count > 0 && dt.Rows[0][0] != DBNull.Value)
+                string sqlDatBan = @"SELECT ISNULL(SUM(TongTien), 0) 
+                             FROM PhieuDatBan 
+                             WHERE MONTH(NgayDung) = @Thang AND YEAR(NgayDung) = @Nam";
+
+                string sqlNhapHang = @"SELECT ISNULL(SUM(TongTien), 0) 
+                               FROM HoaDonNhap 
+                               WHERE MONTH(NgayNhap) = @Thang AND YEAR(NgayNhap) = @Nam";
+
+                SqlParameter[] parameters = new SqlParameter[]
                 {
-                    doanhThu = Convert.ToDecimal(dt.Rows[0][0]);
+            new SqlParameter("@Thang", thang),
+            new SqlParameter("@Nam", nam)
+                };
+
+                DataTable dtDatBan = DatabaseHelper.ExecuteQuery(sqlDatBan, parameters);
+                DataTable dtNhap = DatabaseHelper.ExecuteQuery(sqlNhapHang, parameters);
+
+                decimal doanhThu = 0;
+                decimal chiPhi = 0;
+
+                if (dtDatBan != null && dtDatBan.Rows.Count > 0)
+                {
+                    decimal.TryParse(dtDatBan.Rows[0][0].ToString(), out doanhThu);
+                }
+                if (dtNhap != null && dtNhap.Rows.Count > 0)
+                {
+                    decimal.TryParse(dtNhap.Rows[0][0].ToString(), out chiPhi);
+                }
+
+                return doanhThu - chiPhi;
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
+
+        public static int LayTongSoNhanVien()
+        {
+            int tong = 0;
+            string query = "SELECT COUNT(*) FROM NhanVien";
+            Database db = new Database();
+            using (SqlConnection conn = db.GetConnection())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    object result = cmd.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                    {
+                        tong = Convert.ToInt32(result);
+                    }
                 }
             }
-            catch
-            {
-                doanhThu = 0;
-            }
+            return tong;
+        }
 
-            return doanhThu;
+        public static int LayTongSoKhachHang()
+        {
+            int tong = 0;
+            string query = "SELECT COUNT(*) FROM Khach";
+            Database db = new Database();
+            using (SqlConnection conn = db.GetConnection())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    object result = cmd.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                    {
+                        tong = Convert.ToInt32(result);
+                    }
+                }
+            }
+            return tong;
         }
     }
 }

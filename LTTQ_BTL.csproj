@@ -10,8 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CrystalReports.Engine" Version="13.0.4003" />
-    <PackageReference Include="CrystalReports.ReportAppServer.ClientDoc" Version="13.0.4003" />
     <PackageReference Include="EPPlus" Version="8.7.2" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.1" />
     <PackageReference Include="WinForms.DataVisualization" Version="1.10.2" />

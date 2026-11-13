@@ -43,8 +43,10 @@
             label1 = new Label();
             groupBox5 = new GroupBox();
             groupBox4 = new GroupBox();
+            cboNhanVien = new ComboBox();
+            cboLoaiHoaDon = new ComboBox();
             btnXuatEccel = new Button();
-            chartTyLeGioiTinh = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            chartTopMonAn = new System.Windows.Forms.DataVisualization.Charting.Chart();
             chartDoanhThu6Thang = new System.Windows.Forms.DataVisualization.Charting.Chart();
             groupBox2 = new GroupBox();
             lblTongSoKH = new Label();
@@ -58,12 +60,10 @@
             panel1 = new Panel();
             groupBox3 = new GroupBox();
             groupBox1 = new GroupBox();
-            cboLoaiBaoCao = new ComboBox();
-            cboNhanVien = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)dgvBaoCao).BeginInit();
             groupBox5.SuspendLayout();
             groupBox4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)chartTyLeGioiTinh).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)chartTopMonAn).BeginInit();
             ((System.ComponentModel.ISupportInitialize)chartDoanhThu6Thang).BeginInit();
             groupBox2.SuspendLayout();
             panel2.SuspendLayout();
@@ -82,7 +82,7 @@
             dgvBaoCao.Name = "dgvBaoCao";
             dgvBaoCao.RowHeadersWidth = 51;
             dgvBaoCao.RowTemplate.Height = 24;
-            dgvBaoCao.Size = new Size(803, 304);
+            dgvBaoCao.Size = new Size(1038, 304);
             dgvBaoCao.TabIndex = 0;
             // 
             // btnLamMoi
@@ -159,7 +159,7 @@
             label1.Name = "label1";
             label1.Size = new Size(123, 20);
             label1.TabIndex = 0;
-            label1.Text = "Loại báo cáo:";
+            label1.Text = "Loại hóa đơn:";
             // 
             // groupBox5
             // 
@@ -169,7 +169,7 @@
             groupBox5.Margin = new Padding(3, 4, 3, 4);
             groupBox5.Name = "groupBox5";
             groupBox5.Padding = new Padding(3, 4, 3, 4);
-            groupBox5.Size = new Size(834, 344);
+            groupBox5.Size = new Size(1074, 344);
             groupBox5.TabIndex = 9;
             groupBox5.TabStop = false;
             groupBox5.Text = "DANH SÁCH BÁO CÁO CHI TIẾT";
@@ -177,7 +177,7 @@
             // groupBox4
             // 
             groupBox4.Controls.Add(cboNhanVien);
-            groupBox4.Controls.Add(cboLoaiBaoCao);
+            groupBox4.Controls.Add(cboLoaiHoaDon);
             groupBox4.Controls.Add(btnXuatEccel);
             groupBox4.Controls.Add(btnLamMoi);
             groupBox4.Controls.Add(btnTaoBaoCao);
@@ -197,6 +197,22 @@
             groupBox4.TabStop = false;
             groupBox4.Text = "BỘ LỌC BÁO CÁO";
             // 
+            // cboNhanVien
+            // 
+            cboNhanVien.FormattingEnabled = true;
+            cboNhanVien.Location = new Point(156, 197);
+            cboNhanVien.Name = "cboNhanVien";
+            cboNhanVien.Size = new Size(262, 28);
+            cboNhanVien.TabIndex = 12;
+            // 
+            // cboLoaiHoaDon
+            // 
+            cboLoaiHoaDon.FormattingEnabled = true;
+            cboLoaiHoaDon.Location = new Point(156, 32);
+            cboLoaiHoaDon.Name = "cboLoaiHoaDon";
+            cboLoaiHoaDon.Size = new Size(262, 28);
+            cboLoaiHoaDon.TabIndex = 11;
+            // 
             // btnXuatEccel
             // 
             btnXuatEccel.BackColor = Color.FromArgb(0, 192, 0);
@@ -208,18 +224,18 @@
             btnXuatEccel.UseVisualStyleBackColor = false;
             btnXuatEccel.Click += btnXuatExcel_Click;
             // 
-            // chartTyLeGioiTinh
+            // chartTopMonAn
             // 
             chartArea1.Name = "ChartArea1";
-            chartTyLeGioiTinh.ChartAreas.Add(chartArea1);
+            chartTopMonAn.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
-            chartTyLeGioiTinh.Legends.Add(legend1);
-            chartTyLeGioiTinh.Location = new Point(174, 32);
-            chartTyLeGioiTinh.Margin = new Padding(3, 4, 3, 4);
-            chartTyLeGioiTinh.Name = "chartTyLeGioiTinh";
-            chartTyLeGioiTinh.Size = new Size(300, 241);
-            chartTyLeGioiTinh.TabIndex = 0;
-            chartTyLeGioiTinh.Text = "chart1";
+            chartTopMonAn.Legends.Add(legend1);
+            chartTopMonAn.Location = new Point(174, 32);
+            chartTopMonAn.Margin = new Padding(3, 4, 3, 4);
+            chartTopMonAn.Name = "chartTopMonAn";
+            chartTopMonAn.Size = new Size(300, 241);
+            chartTopMonAn.TabIndex = 0;
+            chartTopMonAn.Text = "chart1";
             // 
             // chartDoanhThu6Thang
             // 
@@ -227,7 +243,7 @@
             chartDoanhThu6Thang.ChartAreas.Add(chartArea2);
             legend2.Name = "Legend1";
             chartDoanhThu6Thang.Legends.Add(legend2);
-            chartDoanhThu6Thang.Location = new Point(23, 32);
+            chartDoanhThu6Thang.Location = new Point(109, 32);
             chartDoanhThu6Thang.Margin = new Padding(3, 4, 3, 4);
             chartDoanhThu6Thang.Name = "chartDoanhThu6Thang";
             chartDoanhThu6Thang.Size = new Size(699, 241);
@@ -242,7 +258,7 @@
             groupBox2.Margin = new Padding(3, 4, 3, 4);
             groupBox2.Name = "groupBox2";
             groupBox2.Padding = new Padding(3, 4, 3, 4);
-            groupBox2.Size = new Size(748, 298);
+            groupBox2.Size = new Size(907, 312);
             groupBox2.TabIndex = 6;
             groupBox2.TabStop = false;
             groupBox2.Text = "Tăng trưởng doanh thu 6 tháng gần nhất";
@@ -274,7 +290,7 @@
             panel2.BackColor = Color.FromArgb(255, 128, 0);
             panel2.Controls.Add(lblTongSoKH);
             panel2.Controls.Add(lblTongSoKH_TieuDe);
-            panel2.Location = new Point(439, 32);
+            panel2.Location = new Point(562, 32);
             panel2.Margin = new Padding(3, 4, 3, 4);
             panel2.Name = "panel2";
             panel2.Size = new Size(428, 181);
@@ -307,7 +323,7 @@
             panel3.BackColor = Color.FromArgb(0, 192, 0);
             panel3.Controls.Add(lblDoanhThuThang);
             panel3.Controls.Add(lblDoanhThuThang_TieuDe);
-            panel3.Location = new Point(873, 32);
+            panel3.Location = new Point(1081, 32);
             panel3.Margin = new Padding(3, 4, 3, 4);
             panel3.Name = "panel3";
             panel3.Size = new Size(492, 181);
@@ -340,7 +356,7 @@
             panel1.BackColor = SystemColors.Highlight;
             panel1.Controls.Add(lblTongSoNV);
             panel1.Controls.Add(lblTongSoNV_TieuDe);
-            panel1.Location = new Point(6, 32);
+            panel1.Location = new Point(29, 32);
             panel1.Margin = new Padding(3, 4, 3, 4);
             panel1.Name = "panel1";
             panel1.Size = new Size(427, 181);
@@ -348,16 +364,16 @@
             // 
             // groupBox3
             // 
-            groupBox3.Controls.Add(chartTyLeGioiTinh);
+            groupBox3.Controls.Add(chartTopMonAn);
             groupBox3.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            groupBox3.Location = new Point(829, 289);
+            groupBox3.Location = new Point(1007, 289);
             groupBox3.Margin = new Padding(3, 4, 3, 4);
             groupBox3.Name = "groupBox3";
             groupBox3.Padding = new Padding(3, 4, 3, 4);
-            groupBox3.Size = new Size(605, 298);
+            groupBox3.Size = new Size(667, 312);
             groupBox3.TabIndex = 7;
             groupBox3.TabStop = false;
-            groupBox3.Text = "Tỷ lệ giới tính khách hàng";
+            groupBox3.Text = "Top món ăn bán chạy";
             // 
             // groupBox1
             // 
@@ -369,26 +385,10 @@
             groupBox1.Margin = new Padding(3, 4, 3, 4);
             groupBox1.Name = "groupBox1";
             groupBox1.Padding = new Padding(3, 4, 3, 4);
-            groupBox1.Size = new Size(1380, 232);
+            groupBox1.Size = new Size(1620, 232);
             groupBox1.TabIndex = 5;
             groupBox1.TabStop = false;
             groupBox1.Text = "Dashboard";
-            // 
-            // cboLoaiBaoCao
-            // 
-            cboLoaiBaoCao.FormattingEnabled = true;
-            cboLoaiBaoCao.Location = new Point(156, 32);
-            cboLoaiBaoCao.Name = "cboLoaiBaoCao";
-            cboLoaiBaoCao.Size = new Size(262, 28);
-            cboLoaiBaoCao.TabIndex = 11;
-            // 
-            // cboNhanVien
-            // 
-            cboNhanVien.FormattingEnabled = true;
-            cboNhanVien.Location = new Point(156, 197);
-            cboNhanVien.Name = "cboNhanVien";
-            cboNhanVien.Size = new Size(262, 28);
-            cboNhanVien.TabIndex = 12;
             // 
             // UC_BaoCao
             // 
@@ -401,12 +401,12 @@
             Controls.Add(groupBox1);
             Margin = new Padding(3, 4, 3, 4);
             Name = "UC_BaoCao";
-            Size = new Size(1489, 1001);
+            Size = new Size(1730, 1001);
             ((System.ComponentModel.ISupportInitialize)dgvBaoCao).EndInit();
             groupBox5.ResumeLayout(false);
             groupBox4.ResumeLayout(false);
             groupBox4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)chartTyLeGioiTinh).EndInit();
+            ((System.ComponentModel.ISupportInitialize)chartTopMonAn).EndInit();
             ((System.ComponentModel.ISupportInitialize)chartDoanhThu6Thang).EndInit();
             groupBox2.ResumeLayout(false);
             panel2.ResumeLayout(false);
@@ -434,7 +434,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartTyLeGioiTinh;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartTopMonAn;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartDoanhThu6Thang;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label lblTongSoKH;
@@ -449,7 +449,7 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox1;
         private Button btnXuatEccel;
-        private ComboBox cboLoaiBaoCao;
+        private ComboBox cboLoaiHoaDon;
         private ComboBox cboNhanVien;
     }
 }

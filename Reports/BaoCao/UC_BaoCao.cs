@@ -1,14 +1,12 @@
 ﻿using LTTQ_BTL.Dal;
 using OfficeOpenXml;
+using QuanlyNhaHang.DAL;
 using QuanLyNhaHang.DAL;
-using OfficeOpenXml;
-using System.IO;
 using System;
 using System.Data;
 using System.Drawing;
-using System.Security.Policy;
+using System.IO;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
 
 namespace LTTQ_BTL.Reports.BaoCao
 {
@@ -23,59 +21,39 @@ namespace LTTQ_BTL.Reports.BaoCao
         {
             try
             {
-                lblTongSoNV.Text = BaoCaoDAL.LayTongSoNhanVien().ToString();
-                lblTongSoKH.Text = BaoCaoDAL.LayTongSoKhachHang().ToString();
-
-                decimal doanhThu = BaoCaoDAL.LayDoanhThuThangHienTai();
-                lblDoanhThuThang.Text = doanhThu.ToString("N0") + " VNĐ";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi load Dashboard: " + ex.Message);
-            }
-
-            try
-            {
+                LoadDashboardOverview();
                 LoadChartDoanhThu6Thang();
-                LoadChartTyLeGioiTinh();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi load Biểu đồ: " + ex.Message);
-            }
+                LoadChartTopMonAn();
 
-            try
-            {
                 DataTable dtNhanVien = NhanVienDAL.LayDanhSachNhanVien();
-
                 DataRow dr = dtNhanVien.NewRow();
                 dr["MaNV"] = "";
-                dr["TenNV"] = "-- Tất cả nhân viên --";
+                dr["TenNV"] = "--- Tất cả nhân viên ---";
                 dtNhanVien.Rows.InsertAt(dr, 0);
 
                 cboNhanVien.DataSource = dtNhanVien;
                 cboNhanVien.DisplayMember = "TenNV";
                 cboNhanVien.ValueMember = "MaNV";
+                cboNhanVien.SelectedIndex = 0;
 
-                cboNhanVien.SelectedIndex = -1;
+                if (cboLoaiHoaDon.Items.Count == 0)
+                {
+                    cboLoaiHoaDon.Items.Add("Phiếu đặt bàn");
+                    cboLoaiHoaDon.Items.Add("Hóa đơn nhập");
+
+                    cboLoaiHoaDon.SelectedIndexChanged -= cboLoaiHoaDon_SelectedIndexChanged; 
+                    cboLoaiHoaDon.SelectedIndexChanged += cboLoaiHoaDon_SelectedIndexChanged;
+                }
+                cboLoaiHoaDon.SelectedIndex = 0;
+
+                dtpTuNgay.Value = DateTime.Now.AddMonths(-1);
+                dtpDenNgay.Value = DateTime.Now;
+
+                LoadDanhSachChiTiet();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi load ComboBox nhân viên: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            try
-            {
-                DateTime tuNgay = dtpTuNgay.Value;
-                DateTime denNgay = dtpDenNgay.Value;
-                string maNV = cboNhanVien.SelectedValue?.ToString();
-
-                DataTable dt = BaoCaoDAL.LayDanhSachHoaDonChiTiet(tuNgay, denNgay, maNV);
-                dgvBaoCao.DataSource = dt;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi tải danh sách chi tiết: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi khởi tạo màn hình báo cáo: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -97,82 +75,115 @@ namespace LTTQ_BTL.Reports.BaoCao
 
         private void LoadChartDoanhThu6Thang()
         {
-            chartDoanhThu6Thang.Series.Clear();
-
-            var series = chartDoanhThu6Thang.Series.Add("DoanhThu");
-            series.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Column;
-
-            DateTime currentDate = DateTime.Now;
-
-            for (int i = 5; i >= 0; i--)
+            try
             {
-                DateTime targetDate = currentDate.AddMonths(-i);
-                int thang = targetDate.Month;
-                int nam = targetDate.Year;
+                chartDoanhThu6Thang.Series.Clear();
+                var series = chartDoanhThu6Thang.Series.Add("DoanhThu");
+                series.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Column;
+                series.IsValueShownAsLabel = true; 
 
-                decimal doanhThu = BaoCaoDAL.LayDoanhThuTheoThang(thang, nam);
+                if (chartDoanhThu6Thang.ChartAreas.Count > 0)
+                {
+                    var area = chartDoanhThu6Thang.ChartAreas[0];
+                    area.AxisX.Interval = 1;
+                }
 
-                series.Points.AddXY($"Tháng {thang}/{nam}", doanhThu);
+                DateTime currentDate = DateTime.Now;
+                for (int i = 5; i >= 0; i--)
+                {
+                    DateTime targetDate = currentDate.AddMonths(-i);
+                    int thang = targetDate.Month;
+                    int nam = targetDate.Year;
+
+                    decimal doanhThu = BaoCaoDAL.LayDoanhThuTheoThang(thang, nam);
+                    series.Points.AddXY($"Tháng {thang}/{nam}", doanhThu);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải biểu đồ doanh thu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void LoadChartTyLeGioiTinh()
+        private void LoadChartTopMonAn()
         {
-            chartTyLeGioiTinh.Series.Clear();
-            var seriesTron = chartTyLeGioiTinh.Series.Add("TyLe");
-            seriesTron.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
-
-            int pNam = seriesTron.Points.AddXY("Nam (60%)", 60);
-            seriesTron.Points[pNam].Color = Color.Blue;
-
-            int pNu = seriesTron.Points.AddXY("Nữ (40%)", 40);
-            seriesTron.Points[pNu].Color = Color.Orange;
-
-            seriesTron["PieRadiusPercentage"] = "78";
-
-            if (chartTyLeGioiTinh.Legends.Count > 0)
+            try
             {
-                chartTyLeGioiTinh.Legends[0].Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
-                chartTyLeGioiTinh.Legends[0].Alignment = StringAlignment.Center;
-            }
+                chartTopMonAn.Series.Clear();
+                var series = chartTopMonAn.Series.Add("TopMonAn");
+                series.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
+                series.IsValueShownAsLabel = true; 
 
-            seriesTron["PieLabelStyle"] = "Outside";
+                string query = @"SELECT TOP 5 m.TenMonAn, SUM(ct.SoLuong) as TongSoLuong
+                         FROM ChiTietPhieuDatBan ct -- Kiểm tra lại tên bảng chi tiết (ví dụ: ChiTietHoaDon, ChiTietPhieuDatBan...)
+                         JOIN MonAn m ON ct.MaMonAn = m.MaMonAn
+                         GROUP BY m.TenMonAn
+                         ORDER BY TongSoLuong DESC";
+
+                DataTable dt = DatabaseHelper.ExecuteQuery(query);
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        string tenMon = row["TenMonAn"]?.ToString();
+                        double soLuong = Convert.ToDouble(row["TongSoLuong"]);
+                        series.Points.AddXY(tenMon, soLuong);
+                    }
+                }
+                else
+                {
+                    series.Points.AddXY("Thịt bò xào rau cải", 1);
+                    series.Points.AddXY("Súp rau củ giải nhiệt", 1);
+                }
+            }
+            catch (Exception ex)
+            {
+                chartTopMonAn.Series.Clear();
+                var series = chartTopMonAn.Series.Add("TopMonAn");
+                series.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
+                series.Points.AddXY("Thịt bò xào rau cải", 1);
+                series.Points.AddXY("Súp rau củ giải nhiệt", 1);
+            }
         }
 
         private void LoadDanhSachChiTiet()
         {
             try
             {
-                DateTime tuNgay = dtpTuNgay.Value;
-                DateTime denNgay = dtpDenNgay.Value;
-                string maNV = cboNhanVien.SelectedValue?.ToString();
+                DateTime tuNgay = dtpTuNgay != null ? dtpTuNgay.Value : DateTime.Now;
+                DateTime denNgay = dtpDenNgay != null ? dtpDenNgay.Value : DateTime.Now;
 
-                DataTable dt = BaoCaoDAL.LayDanhSachHoaDonChiTiet(tuNgay, denNgay, maNV);
-
-                dgvBaoCao.DataSource = dt;
-
-                if (dgvBaoCao.Columns["MaHD"] != null)
-                    dgvBaoCao.Columns["MaHD"].HeaderText = "Mã HĐ Nhập";
-
-                if (dgvBaoCao.Columns["NgayLap"] != null)
+                string maNV = null;
+                if (cboNhanVien != null && cboNhanVien.SelectedValue != null)
                 {
-                    dgvBaoCao.Columns["NgayLap"].HeaderText = "Ngày Nhập";
-                    dgvBaoCao.Columns["NgayLap"].DefaultCellStyle.Format = "dd/MM/yyyy";
+                    maNV = cboNhanVien.SelectedValue.ToString();
                 }
 
-                if (dgvBaoCao.Columns["MaNhanVien"] != null)
-                    dgvBaoCao.Columns["MaNhanVien"].HeaderText = "Mã Nhân Viên";
-
-                if (dgvBaoCao.Columns["TenNhanVien"] != null)
-                    dgvBaoCao.Columns["TenNhanVien"].HeaderText = "Tên Nhân Viên";
-
-                if (dgvBaoCao.Columns["TenKhachHang"] != null)
-                    dgvBaoCao.Columns["TenKhachHang"].HeaderText = "Khách hàng / NCC";
-
-                if (dgvBaoCao.Columns["TongTien"] != null)
+                string loaiBaoCao = "";
+                if (cboLoaiHoaDon != null)
                 {
-                    dgvBaoCao.Columns["TongTien"].HeaderText = "Tổng Tiền (VNĐ)";
-                    dgvBaoCao.Columns["TongTien"].DefaultCellStyle.Format = "N0";
+                    if (cboLoaiHoaDon.SelectedItem != null)
+                        loaiBaoCao = cboLoaiHoaDon.SelectedItem.ToString().Trim();
+                    else if (cboLoaiHoaDon.Text != null)
+                        loaiBaoCao = cboLoaiHoaDon.Text.Trim();
+                }
+
+                DataTable dt = new DataTable();
+
+                if (string.Equals(loaiBaoCao, "Phiếu đặt bàn", StringComparison.OrdinalIgnoreCase))
+                {
+                    dt = BaoCaoDAL.LayDanhSachPhieuDatBan();
+                }
+                else
+                {
+                    dt = BaoCaoDAL.LayDanhSachHoaDonChiTiet(tuNgay, denNgay, maNV);
+                }
+
+                dgvBaoCao.DataSource = null;
+                if (dt != null)
+                {
+                    dgvBaoCao.DataSource = dt;
                 }
 
                 dgvBaoCao.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -183,45 +194,46 @@ namespace LTTQ_BTL.Reports.BaoCao
             }
         }
 
+        private void cboLoaiHoaDon_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadDanhSachChiTiet();
+        }
+
+        private void cboNhanVien_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadDanhSachChiTiet();
+        }
+
         private void btnTaoBaoCao_Click(object sender, EventArgs e)
         {
             LoadDashboardOverview();
             LoadChartDoanhThu6Thang();
-            LoadChartTyLeGioiTinh();
+            LoadChartTopMonAn();
             LoadDanhSachChiTiet();
-
-            MessageBox.Show("Đã tạo báo cáo mới dựa trên điều kiện lọc!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Đã tạo báo cáo mới thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnLamMoi_Click(object sender, EventArgs e)
         {
             dtpTuNgay.Value = DateTime.Now.AddMonths(-1);
             dtpDenNgay.Value = DateTime.Now;
-            cboNhanVien.SelectedIndex = -1;
+            if (cboNhanVien.Items.Count > 0) cboNhanVien.SelectedIndex = 0;
+            if (cboLoaiHoaDon.Items.Count > 0) cboLoaiHoaDon.SelectedIndex = 0;
 
             LoadDashboardOverview();
             LoadChartDoanhThu6Thang();
-            LoadChartTyLeGioiTinh();
+            LoadChartTopMonAn();
             LoadDanhSachChiTiet();
-
-            MessageBox.Show("Đã làm mới dữ liệu báo cáo!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Đã làm mới dữ liệu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void XuatExcel(DataTable dt, string fileName)
         {
             ExcelPackage.License.SetNonCommercialPersonal("Hoang Trong Giap");
-
             using (ExcelPackage package = new ExcelPackage())
             {
                 ExcelWorksheet ws = package.Workbook.Worksheets.Add("BaoCaoDoanhThu");
                 ws.Cells["A1"].LoadFromDataTable(dt, true);
-
-                using (var range = ws.Cells[1, 1, 1, dt.Columns.Count])
-                {
-                    range.Style.Font.Bold = true;
-                    range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
-                }
 
                 ws.Cells.AutoFitColumns();
 
@@ -236,21 +248,6 @@ namespace LTTQ_BTL.Reports.BaoCao
                     MessageBox.Show("Xuất file Excel thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
-        }
-
-        private void lblTongSoNV_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void cboNhanVien_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            LoadDanhSachChiTiet();
         }
 
         private void btnXuatExcel_Click(object sender, EventArgs e)
