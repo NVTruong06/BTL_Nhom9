@@ -1,4 +1,5 @@
-﻿using LTTQ_BTL.Dao;
+﻿using LTTQ_BTL.BLL;
+using LTTQ_BTL.Dao;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,6 +13,7 @@ namespace LTTQ_BTL.Views.NguyenLieu
     public partial class UC_SuaNguyenLieu : UserControl
     {
         private string maNL;
+        NguyenLieuBLL bll1 = new NguyenLieuBLL();
         public UC_SuaNguyenLieu(string ma)
         {
             InitializeComponent();
@@ -30,56 +32,94 @@ namespace LTTQ_BTL.Views.NguyenLieu
 
         private void UC_SuaNguyenLieu_Load(object sender, EventArgs e)
         {
-            NguyenLieuDAO dao = new NguyenLieuDAO();
+            try
+            {
+                NguyenLieuDAO dao = new NguyenLieuDAO();
+                DataTable dt = dao.LayTheoMa(maNL);
 
-            DataTable dt = dao.LayTheoMa(maNL);
+                if (dt.Rows.Count == 0)
+                {
+                    MessageBox.Show("Không tìm thấy thông tin nguyên liệu.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
-            textBox1.Text = dt.Rows[0][0].ToString();
-            textBox2.Text = dt.Rows[0][1].ToString();
-            textBox3.Text = dt.Rows[0][2].ToString();
-            textBox4.Text = dt.Rows[0][3].ToString();
-            textBox5.Text = dt.Rows[0][4].ToString();
-            textBox6.Text = dt.Rows[0][5].ToString();
-            textBox7.Text = dt.Rows[0][6].ToString();
-            textBox8.Text = dt.Rows[0][7].ToString();
-            textBox9.Text = dt.Rows[0][8].ToString();
+                DataRow row = dt.Rows[0];
+                textBox1.Text = row[0]?.ToString() ?? "";
+                textBox2.Text = row[1]?.ToString() ?? "";
+                textBox3.Text = row[2]?.ToString() ?? "";
+                textBox4.Text = row[3]?.ToString() ?? "";
+                textBox5.Text = row[4]?.ToString() ?? "";
+                textBox6.Text = row[5]?.ToString() ?? "";
+                textBox7.Text = row[6]?.ToString() ?? "";
+                textBox8.Text = row[7]?.ToString() ?? "";
+                textBox9.Text = row[8]?.ToString() ?? "";
 
-            textBox1.ReadOnly = true;
+                textBox1.ReadOnly = true;
+                textBox1.Enabled = false;
+
+                textBox4.ReadOnly = true;
+                textBox4.Enabled = false;
+
+                textBox6.ReadOnly = true;
+                textBox6.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (!decimal.TryParse(textBox4.Text, out decimal soluong))
+            try
             {
-                MessageBox.Show("So luong khong hop le");
-                return;
+                string tenNguyenLieu = textBox2.Text.Trim();
+                string donVi = textBox3.Text.Trim();
+
+                if (string.IsNullOrEmpty(tenNguyenLieu) || string.IsNullOrEmpty(donVi))
+                {
+                    MessageBox.Show("Tên và đơn vị không được để trống.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (!decimal.TryParse(textBox5.Text, out decimal giaNhap) || giaNhap < 0)
+                {
+                    MessageBox.Show("Giá nhập phải là số không âm.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (!decimal.TryParse(textBox6.Text, out decimal giaBan) || giaBan <= 0)
+                {
+                    MessageBox.Show("Giá bán phải là số dương.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (!decimal.TryParse(textBox4.Text, out decimal soLuong) || soLuong < 0)
+                {
+                    MessageBox.Show("Số lượng phải là số không âm.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                bool ketqua = bll1.SuaNguyenLieu(textBox1.Text, tenNguyenLieu, donVi,
+                    soLuong, giaNhap, giaBan, textBox7.Text.Trim(), textBox8.Text.Trim(), textBox9.Text.Trim());
+
+                if (ketqua)
+                {
+                    MessageBox.Show("Cập nhật nguyên liệu thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Cập nhật không thành công.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+
+                FormMain form = (FormMain)this.FindForm();
+                UC_NguyenLieu uc = new UC_NguyenLieu();
+                form.HienThiTrang(uc);
             }
-            if (!decimal.TryParse(textBox5.Text, out decimal nhap))
+            catch (Exception ex)
             {
-                MessageBox.Show("Don gia nhap khong hop le");
-                return;
+                MessageBox.Show("Lỗi cập nhật: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            if (!decimal.TryParse(textBox6.Text, out decimal ban))
-            {
-                MessageBox.Show("Don gia ban khong hop le");
-                return;
-            }
-            if(textBox2.Text == ""|| textBox3.Text == "" || textBox7.Text == "" || textBox8.Text == "" | textBox9.Text == "")
-            {
-                MessageBox.Show("Thong tin khong duoc de trong");
-                return;
-            }
-
-            NguyenLieuDAO dao = new NguyenLieuDAO();
-
-            bool ketqua = dao.SuaNguyenLieu(textBox1.Text, textBox2.Text, textBox3.Text,
-                soluong, nhap, ban, textBox7.Text, textBox8.Text, textBox9.Text);
-
-            FormMain form = (FormMain)this.FindForm();
-
-            UC_NguyenLieu uc = new UC_NguyenLieu();
-
-            form.HienThiTrang(uc);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -115,6 +155,11 @@ namespace LTTQ_BTL.Views.NguyenLieu
             UC_NguyenLieu uc = new UC_NguyenLieu();
 
             form.HienThiTrang(uc);
+        }
+
+        private void textBox5_TextChanged(object sender, EventArgs e)
+        {
+            textBox6.Text = textBox5.Text;
         }
     }
 }

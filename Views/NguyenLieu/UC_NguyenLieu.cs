@@ -5,12 +5,14 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using LTTQ_BTL.BLL;
 using LTTQ_BTL.Dao;
 
 namespace LTTQ_BTL.Views.NguyenLieu
 {
     public partial class UC_NguyenLieu : UserControl
     {
+        NguyenLieuBLL bll = new NguyenLieuBLL();
         public UC_NguyenLieu()
         {
             InitializeComponent();
@@ -51,16 +53,22 @@ namespace LTTQ_BTL.Views.NguyenLieu
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.CurrentRow != null)
+            if (dataGridView1.CurrentRow == null)
             {
-                string ma = dataGridView1.CurrentRow.Cells[0].Value.ToString();
-
-                FormMain form = (FormMain)this.FindForm();
-
-                UC_NhapNguyenLieu uc = new UC_NhapNguyenLieu(ma);
-
-                form.HienThiTrang(uc);
+                MessageBox.Show("Vui lòng chọn nguyên liệu cần nhập.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
+
+            string ma = dataGridView1.CurrentRow.Cells[0]?.Value?.ToString();
+            if (string.IsNullOrEmpty(ma))
+            {
+                MessageBox.Show("Không thể lấy mã nguyên liệu.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            FormMain form = (FormMain)this.FindForm();
+            UC_NhapNguyenLieu uc = new UC_NhapNguyenLieu(ma);
+            form.HienThiTrang(uc);
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -75,23 +83,37 @@ namespace LTTQ_BTL.Views.NguyenLieu
 
         private void UC_NguyenLieu_Load(object sender, EventArgs e)
         {
-            NguyenLieuDAO dao = new NguyenLieuDAO();
-
-            dataGridView1.DataSource = dao.DSNguyenLieu();
-
-            DinhDangDGV();
+            try
+            {
+                dataGridView1.DataSource = bll.DSNguyenLieu();
+                DinhDangDGV();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string ten = textBox1.Text.Trim();
-            string congdung = textBox2.Text.Trim();
-            string ccd = textBox3.Text.Trim();
-            NguyenLieuDAO dao = new NguyenLieuDAO();
+            try
+            {
+                string ten = textBox1.Text.Trim();
+                string congdung = textBox2.Text.Trim();
+                string ccd = textBox3.Text.Trim();
 
-            dataGridView1.DataSource = dao.TimKiem(ten, congdung, ccd);
-
-            DinhDangDGV();
+                DataTable dt = bll.TimKiem(ten, congdung, ccd);
+                if (dt.Rows.Count == 0)
+                {
+                    MessageBox.Show("Không tìm thấy nguyên liệu phù hợp.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                dataGridView1.DataSource = dt;
+                DinhDangDGV();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tìm kiếm: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -101,26 +123,79 @@ namespace LTTQ_BTL.Views.NguyenLieu
 
         private void button4_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.CurrentRow != null)
+            if (dataGridView1.CurrentRow == null)
             {
-                string ma = dataGridView1.CurrentRow.Cells[0].Value.ToString();
-
-                FormMain form = (FormMain)this.FindForm();
-
-                UC_SuaNguyenLieu uc = new UC_SuaNguyenLieu(ma);
-
-                form.HienThiTrang(uc);
+                MessageBox.Show("Vui lòng chọn nguyên liệu cần sửa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
+
+            string ma = dataGridView1.CurrentRow.Cells[0]?.Value?.ToString();
+            if (string.IsNullOrEmpty(ma))
+            {
+                MessageBox.Show("Không thể lấy mã nguyên liệu.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            FormMain form = (FormMain)this.FindForm();
+            UC_SuaNguyenLieu uc = new UC_SuaNguyenLieu(ma);
+            form.HienThiTrang(uc);
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+            FormMain form = (FormMain)this.FindForm();
 
+            UC_ThemNguyenLieu uc = new UC_ThemNguyenLieu();
+
+            form.HienThiTrang(uc);
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
+            if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.IsNewRow)
+            {
+                MessageBox.Show("Vui lòng chọn nguyên liệu cần xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
+            string maNguyenLieu = dataGridView1.CurrentRow.Cells["MaNguyenLieu"].Value?.ToString();
+            if (string.IsNullOrEmpty(maNguyenLieu))
+            {
+                MessageBox.Show("Không thể lấy mã nguyên liệu.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            DialogResult xacNhan = MessageBox.Show(
+                "Bạn có chắc chắn muốn xóa nguyên liệu này?",
+                "Xác nhận xóa",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (xacNhan != DialogResult.Yes)
+                return;
+
+            try
+            {
+                bll.XoaNguyenLieu(maNguyenLieu);
+                MessageBox.Show("Xóa nguyên liệu thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                dataGridView1.DataSource = bll.DSNguyenLieu();
+                DinhDangDGV();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Lỗi xóa nguyên liệu: " + ex.Message,
+                    "Lỗi",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            dataGridView1.DataSource = bll.TimKiem(textBox1.Text, textBox2.Text, textBox3.Text);
         }
     }
 }

@@ -62,12 +62,16 @@
             // button2
             // 
             button2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button2.BackColor = Color.FromArgb(98, 102, 247);
+            button2.FlatAppearance.BorderSize = 0;
+            button2.FlatStyle = FlatStyle.Flat;
+            button2.ForeColor = Color.FromArgb(254, 254, 254);
             button2.Location = new Point(263, 3);
             button2.Name = "button2";
             button2.Size = new Size(120, 40);
             button2.TabIndex = 11;
             button2.Text = "Thêm mới";
-            button2.UseVisualStyleBackColor = true;
+            button2.UseVisualStyleBackColor = false;
             button2.Click += button2_Click;
             // 
             // dataGridView1
@@ -84,34 +88,46 @@
             // button5
             // 
             button5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button5.BackColor = Color.FromArgb(98, 102, 247);
+            button5.FlatAppearance.BorderSize = 0;
+            button5.FlatStyle = FlatStyle.Flat;
+            button5.ForeColor = Color.FromArgb(254, 254, 254);
             button5.Location = new Point(641, 3);
             button5.Name = "button5";
             button5.Size = new Size(120, 40);
             button5.TabIndex = 9;
             button5.Text = "Xóa";
-            button5.UseVisualStyleBackColor = true;
+            button5.UseVisualStyleBackColor = false;
             button5.Click += button5_Click;
             // 
             // button3
             // 
             button3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button3.BackColor = Color.FromArgb(98, 102, 247);
+            button3.FlatAppearance.BorderSize = 0;
+            button3.FlatStyle = FlatStyle.Flat;
+            button3.ForeColor = Color.FromArgb(254, 254, 254);
             button3.Location = new Point(389, 3);
             button3.Name = "button3";
             button3.Size = new Size(120, 40);
             button3.TabIndex = 3;
             button3.Text = "Nhập thêm";
-            button3.UseVisualStyleBackColor = true;
+            button3.UseVisualStyleBackColor = false;
             button3.Click += button3_Click;
             // 
             // button4
             // 
             button4.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button4.BackColor = Color.FromArgb(98, 102, 247);
+            button4.FlatAppearance.BorderSize = 0;
+            button4.FlatStyle = FlatStyle.Flat;
+            button4.ForeColor = Color.FromArgb(254, 254, 254);
             button4.Location = new Point(515, 3);
             button4.Name = "button4";
             button4.Size = new Size(120, 40);
             button4.TabIndex = 4;
             button4.Text = "Sửa";
-            button4.UseVisualStyleBackColor = true;
+            button4.UseVisualStyleBackColor = false;
             button4.Click += button4_Click;
             // 
             // label1
@@ -167,12 +183,17 @@
             // 
             // button1
             // 
+            button1.BackColor = Color.FromArgb(98, 102, 247);
+            button1.FlatAppearance.BorderSize = 0;
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.ForeColor = Color.FromArgb(254, 254, 254);
             button1.Location = new Point(641, 3);
             button1.Name = "button1";
             button1.Size = new Size(120, 40);
             button1.TabIndex = 11;
             button1.Text = "Tìm Kiếm";
-            button1.UseVisualStyleBackColor = true;
+            button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click_1;
             // 
             // UC_NguyenLieu
             // 

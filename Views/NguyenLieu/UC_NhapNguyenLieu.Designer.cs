@@ -51,6 +51,7 @@
             label4 = new Label();
             label3 = new Label();
             label2 = new Label();
+            label11 = new Label();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -122,23 +123,31 @@
             // button2
             // 
             button2.Anchor = AnchorStyles.None;
+            button2.BackColor = Color.FromArgb(98, 102, 247);
+            button2.FlatAppearance.BorderSize = 0;
+            button2.FlatStyle = FlatStyle.Flat;
+            button2.ForeColor = Color.FromArgb(254, 254, 254);
             button2.Location = new Point(425, 337);
             button2.Name = "button2";
             button2.Size = new Size(120, 40);
             button2.TabIndex = 19;
             button2.Text = "xác nhận";
-            button2.UseVisualStyleBackColor = true;
+            button2.UseVisualStyleBackColor = false;
             button2.Click += button2_Click;
             // 
             // button1
             // 
             button1.Anchor = AnchorStyles.None;
+            button1.BackColor = Color.FromArgb(98, 102, 247);
+            button1.FlatAppearance.BorderSize = 0;
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.ForeColor = Color.FromArgb(254, 254, 254);
             button1.Location = new Point(233, 337);
             button1.Name = "button1";
             button1.Size = new Size(120, 40);
             button1.TabIndex = 18;
             button1.Text = "Quay lại";
-            button1.UseVisualStyleBackColor = true;
+            button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
             // 
             // comboBox4
@@ -301,10 +310,24 @@
             label2.Text = "Tên nguyên liệu";
             label2.Click += label2_Click;
             // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new Point(20, 22);
+            label11.Name = "label11";
+            label11.Size = new Size(161, 20);
+            label11.TabIndex = 19;
+            label11.Text = "< Quản Lý Nguyên Liệu";
+            label11.Click += label11_Click;
+            label11.MouseEnter += label11_MouseEnter;
+            label11.MouseLeave += label11_MouseLeave;
+            // 
             // UC_NhapNguyenLieu
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(254, 254, 254);
+            Controls.Add(label11);
             Controls.Add(panel1);
             Controls.Add(label1);
             Name = "UC_NhapNguyenLieu";
@@ -341,5 +364,6 @@
         private TextBox textBox7;
         private TextBox textBox6;
         private DateTimePicker dateTimePicker1;
+        private Label label11;
     }
 }

@@ -11,6 +11,38 @@ namespace LTTQ_BTL.Dao
     {
         Database db = new Database();
 
+        public DataTable DSHoaDonNhap()
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = db.GetConnection())
+            {
+                string sql = "SELECT * FROM HoaDonNhap JOIN NhanVien ON HoaDonNhap.MaNhanVien = NhanVien.MaNhanVien " +
+                    "JOIN NhaCungCap ON HoaDonNhap.MaNhaCungCap = NhaCungCap.MaNhaCungCap";
+
+                SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
+
+                adapter.Fill(dt);
+            }
+            return dt;
+        }
+        //chi tiet hoa don nhap theo ma
+        public DataTable ChiTietHoaDonNhap(string ma)
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = db.GetConnection())
+            {
+                string sql = "SELECT * FROM ChiTietHoaDonNhap JOIN NguyenLieu ON ChiTietHoaDonNhap.MaNguyenLieu = NguyenLieu.MaNguyenLieu" +
+                    " WHERE MaHoaDonNhap = @Ma";
+
+                SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
+
+                adapter.SelectCommand.Parameters.AddWithValue("@Ma", ma);
+
+                adapter.Fill(dt);
+            }
+            return dt;
+        }
+
         public bool ThemPhieuNhap(
             string maHoaDon,
             DateTime ngayNhap,

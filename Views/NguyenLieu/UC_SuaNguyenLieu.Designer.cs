@@ -67,8 +67,11 @@
             // panel1
             // 
             panel1.Anchor = AnchorStyles.None;
+            panel1.BackColor = Color.FromArgb(254, 254, 254);
             panel1.Controls.Add(textBox9);
+            panel1.Controls.Add(button2);
             panel1.Controls.Add(textBox8);
+            panel1.Controls.Add(button1);
             panel1.Controls.Add(textBox7);
             panel1.Controls.Add(textBox6);
             panel1.Controls.Add(textBox5);
@@ -87,7 +90,7 @@
             panel1.Controls.Add(textBox1);
             panel1.Location = new Point(20, 86);
             panel1.Name = "panel1";
-            panel1.Size = new Size(777, 367);
+            panel1.Size = new Size(777, 399);
             panel1.TabIndex = 10;
             panel1.Paint += panel1_Paint;
             // 
@@ -125,6 +128,7 @@
             textBox5.Name = "textBox5";
             textBox5.Size = new Size(303, 27);
             textBox5.TabIndex = 13;
+            textBox5.TextChanged += textBox5_TextChanged;
             // 
             // textBox4
             // 
@@ -239,23 +243,31 @@
             // button1
             // 
             button1.Anchor = AnchorStyles.Bottom;
-            button1.Location = new Point(285, 459);
+            button1.BackColor = Color.FromArgb(98, 102, 247);
+            button1.FlatAppearance.BorderSize = 0;
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.ForeColor = Color.FromArgb(254, 254, 254);
+            button1.Location = new Point(273, 362);
             button1.Name = "button1";
             button1.Size = new Size(94, 29);
             button1.TabIndex = 11;
             button1.Text = "Hủy";
-            button1.UseVisualStyleBackColor = true;
+            button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
             // 
             // button2
             // 
             button2.Anchor = AnchorStyles.Bottom;
-            button2.Location = new Point(405, 459);
+            button2.BackColor = Color.FromArgb(98, 102, 247);
+            button2.FlatAppearance.BorderSize = 0;
+            button2.FlatStyle = FlatStyle.Flat;
+            button2.ForeColor = Color.FromArgb(254, 254, 254);
+            button2.Location = new Point(393, 362);
             button2.Name = "button2";
             button2.Size = new Size(94, 29);
             button2.TabIndex = 12;
             button2.Text = "Xác nhận";
-            button2.UseVisualStyleBackColor = true;
+            button2.UseVisualStyleBackColor = false;
             button2.Click += button2_Click;
             // 
             // label11
@@ -276,8 +288,6 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(label11);
-            Controls.Add(button2);
-            Controls.Add(button1);
             Controls.Add(panel1);
             Controls.Add(label1);
             Name = "UC_SuaNguyenLieu";

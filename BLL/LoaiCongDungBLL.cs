@@ -1,4 +1,4 @@
-﻿using LTTQ_BTL.Dao;
+using LTTQ_BTL.Dao;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,12 +12,32 @@ namespace LTTQ_BTL.BLL
 
         public DataTable DSCongDung()
         {
-            return dao.DSCongDung();
+            try
+            {
+                DataTable dt = dao.DSCongDung();
+                if (dt == null || dt.Rows.Count == 0)
+                    return new DataTable();
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi lấy danh sách công dụng: " + ex.Message);
+            }
         }
 
         public DataTable DSLoai()
         {
-            return dao.DSLoai();
+            try
+            {
+                DataTable dt = dao.DSLoai();
+                if (dt == null || dt.Rows.Count == 0)
+                    return new DataTable();
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi lấy danh sách loại: " + ex.Message);
+            }
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using LTTQ_BTL.Views.MonAn;
+﻿using LTTQ_BTL.Views.DatBan;
+using LTTQ_BTL.Views.HoaDonNhap;
+using LTTQ_BTL.Views.MonAn;
 using LTTQ_BTL.Views.NguyenLieu;
 using QuanLyNhaHang;
 using System;
@@ -58,6 +60,7 @@ namespace LTTQ_BTL.Views
             button4.BackColor = Color.FromArgb(98, 102, 247);
             button5.BackColor = Color.FromArgb(98, 102, 247);
             button6.BackColor = Color.FromArgb(98, 102, 247);
+            button10.BackColor = Color.FromArgb(98, 102, 247);
 
             btn.BackColor = Color.FromArgb(65, 69, 219);
         }
@@ -76,7 +79,6 @@ namespace LTTQ_BTL.Views
         {
             UC_MonAn uc = new UC_MonAn();
             HienThiTrang(uc);
-
             activeButton(sender);
         }
 
@@ -140,6 +142,30 @@ namespace LTTQ_BTL.Views
                 ReleaseCapture();
                 SendMessage(this.Handle, 0xA1, 0x2, 0);
             }
+        }
+
+        private void panel4_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            UC_DatBan uc = new UC_DatBan();
+            HienThiTrang(uc);
+            activeButton(sender);
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            UC_HoaDonNhap uc = new UC_HoaDonNhap();
+            HienThiTrang(uc);
+            activeButton(sender);
         }
     }
 }

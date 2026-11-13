@@ -87,9 +87,10 @@
             // 
             // pictureBox1
             // 
-            pictureBox1.Location = new Point(103, 40);
+            pictureBox1.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            pictureBox1.Location = new Point(95, 14);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(125, 117);
+            pictureBox1.Size = new Size(160, 160);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.TabIndex = 12;
             pictureBox1.TabStop = false;
@@ -307,6 +308,7 @@
             button4.TabIndex = 7;
             button4.Text = "Xóa";
             button4.UseVisualStyleBackColor = false;
+            button4.Click += button4_Click;
             // 
             // button3
             // 
@@ -321,6 +323,7 @@
             button3.TabIndex = 6;
             button3.Text = "Sửa";
             button3.UseVisualStyleBackColor = false;
+            button3.Click += button3_Click;
             // 
             // button2
             // 

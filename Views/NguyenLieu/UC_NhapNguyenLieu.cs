@@ -1,4 +1,5 @@
-﻿using LTTQ_BTL.Dao;
+﻿using LTTQ_BTL.BLL;
+using LTTQ_BTL.Dao;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,6 +13,8 @@ namespace LTTQ_BTL.Views.NguyenLieu
     public partial class UC_NhapNguyenLieu : UserControl
     {
         string maNL;
+        NguyenLieuBLL bll1 = new NguyenLieuBLL();
+        HoaDonNhapDao bll2 = new HoaDonNhapDao(); 
         public UC_NhapNguyenLieu(string ma)
         {
             InitializeComponent();
@@ -20,36 +23,44 @@ namespace LTTQ_BTL.Views.NguyenLieu
 
         private void UC_NhapNguyenLieu_Load(object sender, EventArgs e)
         {
-            NguyenLieuDAO dao = new NguyenLieuDAO();
+            try
+            {
+                DataTable dt1 = bll1.LayTheoMa(maNL);
+                if (dt1.Rows.Count == 0)
+                {
+                    MessageBox.Show("Không tìm thấy nguyên liệu.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
-            DataTable dt1 = dao.LayTheoMa(maNL);
+                textBox6.Text = dt1.Rows[0][1]?.ToString() ?? "";
+                textBox6.Enabled = false;
 
-            textBox6.Text = dt1.Rows[0][1].ToString();
-            textBox6.Enabled = false;
+                textBox7.Text = dt1.Rows[0][0]?.ToString() ?? "";
+                textBox7.Enabled = false;
 
-            textBox7.Text = dt1.Rows[0][0].ToString();
-            textBox7.Enabled = false;
+                textBox1.Text = dt1.Rows[0][5]?.ToString() ?? "";
+                textBox1.Enabled = false;
 
-            textBox1.Text = dt1.Rows[0][5].ToString();
-            textBox1.Enabled = false;
+                DataTable dt2 = bll1.DSNhanVien();
+                comboBox3.DataSource = dt2;
+                comboBox3.DisplayMember = "TenNhanVien";
+                comboBox3.ValueMember = "MaNhanVien";
 
-            DataTable dt2 = dao.DSNhanVien();
+                DataTable dt3 = bll1.DSNhaCungCap();
+                comboBox4.DataSource = dt3;
+                comboBox4.DisplayMember = "TenNhaCungCap";
+                comboBox4.ValueMember = "MaNhaCungCap";
 
-            comboBox3.DataSource = dt2;
-            comboBox3.DisplayMember = "TenNhanVien";
-            comboBox3.ValueMember = "MaNhanVien";
+                comboBox3.SelectedIndex = -1;
+                comboBox4.SelectedIndex = -1;
 
-            DataTable dt3 = dao.DSNhaCungCap();
-
-            comboBox4.DataSource = dt3;
-            comboBox4.DisplayMember = "TenNhaCungCap";
-            comboBox4.ValueMember = "MaNhaCungCap";
-
-            comboBox3.SelectedIndex = -1;
-            comboBox4.SelectedIndex = -1;
-
-            textBox4.ReadOnly = true;
-            textBox4.Enabled = false;
+                textBox4.ReadOnly = true;
+                textBox4.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
 
@@ -128,53 +139,87 @@ namespace LTTQ_BTL.Views.NguyenLieu
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (!decimal.TryParse(textBox1.Text, out decimal dongia))
+            try
             {
-                MessageBox.Show("gon gia khong hop le");
-                return;
-            }
-            if (!decimal.TryParse(textBox2.Text, out decimal soluong))
-            {
-                MessageBox.Show("So luong khong hop le");
-                return;
-            }
-            if (!decimal.TryParse(textBox3.Text, out decimal khuyenmai))
-            {
-                MessageBox.Show("khuyen mai khong hop le");
-                return;
-            }
-            if (!decimal.TryParse(textBox4.Text, out decimal tongtien))
-            {
-                MessageBox.Show("tong tien khong hop le");
-                return;
-            }
-
-            if (textBox4.Text == "0" || textBox4.Text == "" || textBox5.Text == "")
-            {
-                MessageBox.Show("Thong tin khong duoc de trong");
-            }
-
-            HoaDonNhapDao dao = new HoaDonNhapDao();
-
-            DataTable dt = dao.LayTheoMa(textBox5.Text);
-
-            if (dt.Rows.Count >= 1)
-            {
-                MessageBox.Show("Ma trung");
-            }
-            else
-            {
-                bool ketqua = dao.ThemPhieuNhap(textBox5.Text, dateTimePicker1.Value,
-                    comboBox3.SelectedValue.ToString(), comboBox4.SelectedValue.ToString(), tongtien, textBox7.Text, soluong, dongia, khuyenmai);
-
-                if (ketqua)
+                if (!decimal.TryParse(textBox1.Text, out decimal donGia) || donGia <= 0)
                 {
-                    MessageBox.Show("Nhập nguyên liệu thành công!");
+                    MessageBox.Show("Đơn giá không hợp lệ.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
+                if (!decimal.TryParse(textBox2.Text, out decimal soLuong) || soLuong <= 0)
+                {
+                    MessageBox.Show("Số lượng không hợp lệ.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (!decimal.TryParse(textBox3.Text, out decimal khuyenMai) || khuyenMai < 0 || khuyenMai > 100)
+                {
+                    MessageBox.Show("Khuyến mại phải từ 0 đến 100%.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (!decimal.TryParse(textBox4.Text, out decimal tongTien) || tongTien <= 0)
+                {
+                    MessageBox.Show("Tổng tiền không hợp lệ.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(textBox5.Text.Trim()))
+                {
+                    MessageBox.Show("Mã hóa đơn không được để trống.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (comboBox3.SelectedIndex == -1)
+                {
+                    MessageBox.Show("Vui lòng chọn nhân viên.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (comboBox4.SelectedIndex == -1)
+                {
+                    MessageBox.Show("Vui lòng chọn nhà cung cấp.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                string maHoaDon = textBox5.Text.Trim();
+                DataTable dt = bll2.LayTheoMa(maHoaDon);
+
+                if (dt.Rows.Count >= 1)
+                {
+                    MessageBox.Show("Mã hóa đơn đã tồn tại.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                bool ketQua = bll2.ThemPhieuNhap(
+                    maHoaDon,
+                    dateTimePicker1.Value,
+                    comboBox3.SelectedValue?.ToString() ?? "",
+                    comboBox4.SelectedValue?.ToString() ?? "",
+                    tongTien,
+                    textBox7.Text.Trim(),
+                    soLuong,
+                    donGia,
+                    khuyenMai
+                );
+
+                if (ketQua)
+                {
+                    MessageBox.Show("Nhập nguyên liệu thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     textBox2.Clear();
                     textBox3.Clear();
                     textBox4.Text = "0";
+                    textBox5.Clear();
                 }
+                else
+                {
+                    MessageBox.Show("Nhập nguyên liệu không thành công.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi nhập nguyên liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -190,6 +235,27 @@ namespace LTTQ_BTL.Views.NguyenLieu
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void label11_Click(object sender, EventArgs e)
+        {
+            FormMain form = (FormMain)this.FindForm();
+
+            UC_NguyenLieu uc = new UC_NguyenLieu();
+
+            form.HienThiTrang(uc);
+        }
+
+        private void label11_MouseEnter(object sender, EventArgs e)
+        {
+            label11.ForeColor = Color.Blue;
+            label11.Cursor = Cursors.Hand;
+        }
+
+        private void label11_MouseLeave(object sender, EventArgs e)
+        {
+            label11.BackColor = Color.Transparent;
+            label11.ForeColor = Color.Black;
         }
     }
 }

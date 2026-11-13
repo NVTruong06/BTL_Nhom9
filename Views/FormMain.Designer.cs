@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             panel2 = new Panel();
+            button10 = new Button();
             button6 = new Button();
             button5 = new Button();
             button4 = new Button();
@@ -50,6 +51,7 @@
             panel2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             panel2.BackColor = Color.FromArgb(98, 102, 247);
             panel2.BorderStyle = BorderStyle.Fixed3D;
+            panel2.Controls.Add(button10);
             panel2.Controls.Add(button6);
             panel2.Controls.Add(button5);
             panel2.Controls.Add(button4);
@@ -61,6 +63,22 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(242, 662);
             panel2.TabIndex = 1;
+            panel2.Paint += panel2_Paint;
+            // 
+            // button10
+            // 
+            button10.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            button10.FlatAppearance.BorderSize = 0;
+            button10.FlatStyle = FlatStyle.Flat;
+            button10.Font = new Font("Microsoft Sans Serif", 10.8F);
+            button10.ForeColor = SystemColors.ControlLightLight;
+            button10.Location = new Point(3, 254);
+            button10.Name = "button10";
+            button10.Size = new Size(232, 60);
+            button10.TabIndex = 6;
+            button10.Text = "Hóa Đơn Nhập";
+            button10.UseVisualStyleBackColor = true;
+            button10.Click += button10_Click;
             // 
             // button6
             // 
@@ -69,7 +87,7 @@
             button6.FlatStyle = FlatStyle.Flat;
             button6.Font = new Font("Microsoft Sans Serif", 10.8F);
             button6.ForeColor = SystemColors.ControlLightLight;
-            button6.Location = new Point(3, 386);
+            button6.Location = new Point(3, 452);
             button6.Name = "button6";
             button6.Size = new Size(232, 60);
             button6.TabIndex = 5;
@@ -84,7 +102,7 @@
             button5.FlatStyle = FlatStyle.Flat;
             button5.Font = new Font("Microsoft Sans Serif", 10.8F);
             button5.ForeColor = SystemColors.ControlLightLight;
-            button5.Location = new Point(3, 320);
+            button5.Location = new Point(3, 386);
             button5.Name = "button5";
             button5.Size = new Size(232, 60);
             button5.TabIndex = 4;
@@ -99,7 +117,7 @@
             button4.FlatStyle = FlatStyle.Flat;
             button4.Font = new Font("Microsoft Sans Serif", 10.8F);
             button4.ForeColor = SystemColors.ControlLightLight;
-            button4.Location = new Point(3, 254);
+            button4.Location = new Point(3, 320);
             button4.Name = "button4";
             button4.Size = new Size(232, 60);
             button4.TabIndex = 3;
@@ -120,6 +138,7 @@
             button3.TabIndex = 2;
             button3.Text = "Đặt Bàn";
             button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click;
             // 
             // button2
             // 
@@ -222,6 +241,7 @@
             panel4.Name = "panel4";
             panel4.Size = new Size(947, 598);
             panel4.TabIndex = 4;
+            panel4.Paint += panel4_Paint;
             // 
             // FormMain
             // 
@@ -255,5 +275,6 @@
         private Button button9;
         private Button button8;
         private Label label1;
+        private Button button10;
     }
 }
