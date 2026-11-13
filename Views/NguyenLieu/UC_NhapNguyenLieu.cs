@@ -33,30 +33,30 @@ namespace LTTQ_BTL.Views.NguyenLieu
                 }
 
                 textBox6.Text = dt1.Rows[0][1]?.ToString() ?? "";
-                textBox6.Enabled = false;
+            textBox6.Enabled = false;
 
                 textBox7.Text = dt1.Rows[0][0]?.ToString() ?? "";
-                textBox7.Enabled = false;
+            textBox7.Enabled = false;
 
                 textBox1.Text = dt1.Rows[0][5]?.ToString() ?? "";
-                textBox1.Enabled = false;
+            textBox1.Enabled = false;
 
                 DataTable dt2 = bll1.DSNhanVien();
-                comboBox3.DataSource = dt2;
-                comboBox3.DisplayMember = "TenNhanVien";
-                comboBox3.ValueMember = "MaNhanVien";
+            comboBox3.DataSource = dt2;
+            comboBox3.DisplayMember = "TenNhanVien";
+            comboBox3.ValueMember = "MaNhanVien";
 
                 DataTable dt3 = bll1.DSNhaCungCap();
-                comboBox4.DataSource = dt3;
-                comboBox4.DisplayMember = "TenNhaCungCap";
-                comboBox4.ValueMember = "MaNhaCungCap";
+            comboBox4.DataSource = dt3;
+            comboBox4.DisplayMember = "TenNhaCungCap";
+            comboBox4.ValueMember = "MaNhaCungCap";
 
-                comboBox3.SelectedIndex = -1;
-                comboBox4.SelectedIndex = -1;
+            comboBox3.SelectedIndex = -1;
+            comboBox4.SelectedIndex = -1;
 
-                textBox4.ReadOnly = true;
-                textBox4.Enabled = false;
-            }
+            textBox4.ReadOnly = true;
+            textBox4.Enabled = false;
+        }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -144,32 +144,32 @@ namespace LTTQ_BTL.Views.NguyenLieu
                 if (!decimal.TryParse(textBox1.Text, out decimal donGia) || donGia <= 0)
                 {
                     MessageBox.Show("Đơn giá không hợp lệ.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                return;
+            }
 
                 if (!decimal.TryParse(textBox2.Text, out decimal soLuong) || soLuong <= 0)
-                {
+            {
                     MessageBox.Show("Số lượng không hợp lệ.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                return;
+            }
 
                 if (!decimal.TryParse(textBox3.Text, out decimal khuyenMai) || khuyenMai < 0 || khuyenMai > 100)
-                {
+            {
                     MessageBox.Show("Khuyến mại phải từ 0 đến 100%.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                return;
+            }
 
                 if (!decimal.TryParse(textBox4.Text, out decimal tongTien) || tongTien <= 0)
-                {
+            {
                     MessageBox.Show("Tổng tiền không hợp lệ.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                return;
+            }
 
                 if (string.IsNullOrEmpty(textBox5.Text.Trim()))
-                {
+            {
                     MessageBox.Show("Mã hóa đơn không được để trống.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
-                }
+            }
 
                 if (comboBox3.SelectedIndex == -1)
                 {
@@ -186,11 +186,11 @@ namespace LTTQ_BTL.Views.NguyenLieu
                 string maHoaDon = textBox5.Text.Trim();
                 DataTable dt = bll2.LayTheoMa(maHoaDon);
 
-                if (dt.Rows.Count >= 1)
-                {
+            if (dt.Rows.Count >= 1)
+            {
                     MessageBox.Show("Mã hóa đơn đã tồn tại.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
-                }
+            }
 
                 bool ketQua = bll2.ThemPhieuNhap(
                     maHoaDon,
@@ -216,7 +216,7 @@ namespace LTTQ_BTL.Views.NguyenLieu
                 {
                     MessageBox.Show("Nhập nguyên liệu không thành công.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-            }
+                }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi nhập nguyên liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);

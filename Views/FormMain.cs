@@ -2,6 +2,9 @@
 using LTTQ_BTL.Views.HoaDonNhap;
 using LTTQ_BTL.Views.MonAn;
 using LTTQ_BTL.Views.NguyenLieu;
+using LTTQ_BTL.Views.NhanSu;
+using LTTQ_BTL.Views.Khach;
+using LTTQ_BTL.Reports.BaoCao;
 using QuanLyNhaHang;
 using System;
 using System.Collections.Generic;
@@ -79,6 +82,7 @@ namespace LTTQ_BTL.Views
         {
             UC_MonAn uc = new UC_MonAn();
             HienThiTrang(uc);
+
             activeButton(sender);
         }
 

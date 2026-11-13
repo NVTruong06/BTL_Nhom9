@@ -195,7 +195,7 @@ namespace LTTQ_BTL.BLL
                     "SoLuong",
                     "DonGiaBan"
                 );
-            }
+        }
             catch (Exception ex)
             {
                 throw new Exception("Lỗi lấy danh sách nguyên liệu: " + ex.Message);

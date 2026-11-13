@@ -250,6 +250,7 @@ INSERT INTO MonAn (MaMonAn, TenMonAn, MaCongDung, MaLoai, CachLam, YeuCau, DonGi
 GO
 
 ALTER TABLE MonAn ADD hinhAnh VARCHAR(200);
+Go
 
 
 --nguyen lieu theo ma
@@ -319,5 +320,75 @@ BEGIN
     JOIN CongDung ON MonAn.MaCongDung = CongDung.MaCongDung 
     JOIN LoaiMon ON MonAn.MaLoai = LoaiMon.MaLoai 
     WHERE MaMonAn = @Ma;
+END
+GO
+
+-- 1.1 Lấy danh sách nhân viên
+CREATE PROC sp_DSNhanVien
+AS
+BEGIN
+    SELECT MaNV, TenNV, ChucVu, Luong, SoDienThoai, NgayVaoLam 
+    FROM NhanVien;
+END
+GO
+
+-- 1.2 Tìm kiếm nhân viên theo tên hoặc chức vụ
+CREATE PROC sp_TimKiemNhanVien
+    @TuKhoa NVARCHAR(100)
+AS
+BEGIN
+    SELECT MaNV, TenNV, ChucVu, Luong, SoDienThoai, NgayVaoLam 
+    FROM NhanVien
+    WHERE TenNV LIKE N'%' + @TuKhoa + N'%' 
+       OR ChucVu LIKE N'%' + @TuKhoa + N'%';
+END
+GO
+
+-- 1.3 Thêm nhân viên mới
+CREATE PROC sp_ThemNhanVien
+    @MaNV VARCHAR(20),
+    @TenNV NVARCHAR(100),
+    @ChucVu NVARCHAR(50),
+    @Luong DECIMAL(18,2),
+    @SoDienThoai VARCHAR(15),
+    @NgayVaoLam DATETIME
+AS
+BEGIN
+    INSERT INTO NhanVien(MaNV, TenNV, ChucVu, Luong, SoDienThoai, NgayVaoLam)
+    VALUES(@MaNV, @TenNV, @ChucVu, @Luong, @SoDienThoai, @NgayVaoLam);
+END
+GO
+
+-- 2.1 Lấy danh sách khách hàng
+CREATE PROC sp_DSKhachHang
+AS
+BEGIN
+    SELECT MaKH, TenKH, SoDienThoai, DiaChi, DiemTichLuy 
+    FROM KhachHang;
+END
+GO
+
+-- 2.2 Tìm kiếm khách hàng theo tên hoặc số điện thoại
+CREATE PROC sp_TimKiemKhachHang
+    @TuKhoa NVARCHAR(100)
+AS
+BEGIN
+    SELECT MaKH, TenKH, SoDienThoai, DiaChi, DiemTichLuy 
+    FROM KhachHang
+    WHERE TenKH LIKE N'%' + @TuKhoa + N'%' 
+       OR SoDienThoai LIKE '%' + @TuKhoa + '%';
+END
+GO
+
+-- 2.3 Thêm khách hàng mới
+CREATE PROC sp_ThemKhachHang
+    @MaKH VARCHAR(20),
+    @TenKH NVARCHAR(100),
+    @SoDienThoai VARCHAR(15),
+    @DiaChi NVARCHAR(200)
+AS
+BEGIN
+    INSERT INTO KhachHang(MaKH, TenKH, SoDienThoai, DiaChi, DiemTichLuy)
+    VALUES(@MaKH, @TenKH, @SoDienThoai, @DiaChi, 0); -- Mặc định điểm tích lũy = 0
 END
 GO

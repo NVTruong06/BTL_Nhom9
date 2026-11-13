@@ -66,9 +66,12 @@ namespace LTTQ_BTL.Views.NguyenLieu
                 return;
             }
 
-            FormMain form = (FormMain)this.FindForm();
-            UC_NhapNguyenLieu uc = new UC_NhapNguyenLieu(ma);
-            form.HienThiTrang(uc);
+                FormMain form = (FormMain)this.FindForm();
+
+                UC_NhapNguyenLieu uc = new UC_NhapNguyenLieu(ma);
+
+                form.HienThiTrang(uc);
+            }
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -86,8 +89,8 @@ namespace LTTQ_BTL.Views.NguyenLieu
             try
             {
                 dataGridView1.DataSource = bll.DSNguyenLieu();
-                DinhDangDGV();
-            }
+            DinhDangDGV();
+        }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -98,9 +101,10 @@ namespace LTTQ_BTL.Views.NguyenLieu
         {
             try
             {
-                string ten = textBox1.Text.Trim();
-                string congdung = textBox2.Text.Trim();
-                string ccd = textBox3.Text.Trim();
+            string ten = textBox1.Text.Trim();
+            string congdung = textBox2.Text.Trim();
+            string ccd = textBox3.Text.Trim();
+            NguyenLieuDAO dao = new NguyenLieuDAO();
 
                 DataTable dt = bll.TimKiem(ten, congdung, ccd);
                 if (dt.Rows.Count == 0)
@@ -108,8 +112,8 @@ namespace LTTQ_BTL.Views.NguyenLieu
                     MessageBox.Show("Không tìm thấy nguyên liệu phù hợp.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 dataGridView1.DataSource = dt;
-                DinhDangDGV();
-            }
+            DinhDangDGV();
+        }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi tìm kiếm: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -136,9 +140,12 @@ namespace LTTQ_BTL.Views.NguyenLieu
                 return;
             }
 
-            FormMain form = (FormMain)this.FindForm();
-            UC_SuaNguyenLieu uc = new UC_SuaNguyenLieu(ma);
-            form.HienThiTrang(uc);
+                FormMain form = (FormMain)this.FindForm();
+
+                UC_SuaNguyenLieu uc = new UC_SuaNguyenLieu(ma);
+
+                form.HienThiTrang(uc);
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)

@@ -288,6 +288,8 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(label11);
+            Controls.Add(button2);
+            Controls.Add(button1);
             Controls.Add(panel1);
             Controls.Add(label1);
             Name = "UC_SuaNguyenLieu";

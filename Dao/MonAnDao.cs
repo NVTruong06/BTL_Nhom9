@@ -72,7 +72,7 @@ namespace LTTQ_BTL.Dao
             }
             return dt;
         }
-        
+
         //lai theo ma
         public DataTable LayTheoMa(string ma)
         {

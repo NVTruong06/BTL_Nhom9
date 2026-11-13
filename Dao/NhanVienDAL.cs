@@ -43,5 +43,16 @@ namespace QuanLyNhaHang.DAL
             SqlParameter[] parameters = { new SqlParameter("@Ma", ma) };
             return DatabaseHelper.ExecuteNonQuery(query, parameters) > 0;
         }
+
+        public static DataTable TimKiemNhanVien(string tuKhoa)
+        {
+            string query = "SELECT nv.MaNhanVien, nv.TenNhanVien, nv.GioiTinh, nv.NgaySinh, nv.Diachi, q.TenQue, nv.DienThoai, nv.MaQue " +
+                           "FROM NhanVien nv LEFT JOIN Que q ON nv.MaQue = q.MaQue " +
+                           "WHERE nv.MaNhanVien LIKE @tuKhoa OR nv.TenNhanVien LIKE @tuKhoa";
+            SqlParameter[] parameters = {
+                new SqlParameter("@tuKhoa", "%" + tuKhoa + "%")
+            };
+            return DatabaseHelper.ExecuteQuery(query, parameters);
+        }
     }
 }

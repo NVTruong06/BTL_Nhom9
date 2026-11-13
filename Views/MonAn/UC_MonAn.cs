@@ -50,30 +50,39 @@ namespace LTTQ_BTL.Views.MonAn
         {
             try
             {
-                MonAnDao dao = new MonAnDao();
+            MonAnDao dao = new MonAnDao();
 
                 dataGridView1.DataSource = bll1.DSMonAn();
-                DinhDangDGV();
+            DinhDangDGV();
 
-                DataTable dt1 = dao.DSLoai();
-                comboBox1.DataSource = dt1;
-                comboBox1.DisplayMember = "TenLoai";
-                comboBox1.ValueMember = "MaLoai";
+            DataTable dt1 = dao.DSLoai();
+            comboBox1.DataSource = dt1;
+            comboBox1.DisplayMember = "TenLoai";
+            comboBox1.ValueMember = "MaLoai";
 
-                DataTable dt2 = dao.DSCongDung();
-                comboBox2.DataSource = dt2;
-                comboBox2.DisplayMember = "TenCongDung";
-                comboBox2.ValueMember = "MaCongDung";
+            DataTable dt2 = dao.DSCongDung();
+            comboBox2.DataSource = dt2;
+            comboBox2.DisplayMember = "TenCongDung";
+            comboBox2.ValueMember = "MaCongDung";
 
-                comboBox1.SelectedIndex = -1;
-                comboBox2.SelectedIndex = -1;
+            comboBox1.SelectedIndex = -1;
+            comboBox2.SelectedIndex = -1;
 
-                textBox2.Multiline = true;
-                textBox2.ReadOnly = true;
-                textBox2.WordWrap = true;
+            textBox2.Multiline = true;
+            textBox2.ReadOnly = true;
+            textBox2.WordWrap = true;
 
-                label2.TextAlign = ContentAlignment.TopCenter;
-            }
+            DataTable dt3 = dao.LayTheoMa(dataGridView1.CurrentRow.Cells[0].Value.ToString());
+            label2.Text = dt3.Rows[0][1].ToString();
+            label9.Text = dt3.Rows[0][0].ToString();
+            label10.Text = dt3.Rows[0][2].ToString();
+            label11.Text = dt3.Rows[0][3].ToString();
+            textBox2.Text = dt3.Rows[0][4].ToString();
+            label13.Text = dt3.Rows[0][5].ToString();
+            label14.Text = dt3.Rows[0][6].ToString();
+
+            label2.TextAlign = ContentAlignment.TopCenter;
+        }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -100,12 +109,12 @@ namespace LTTQ_BTL.Views.MonAn
 
                 DataTable dt = bll1.TimKiem(ten, loai, congdung);
                 if (dt.Rows.Count == 0)
-                {
+            {
                     MessageBox.Show("Không tìm thấy món ăn phù hợp.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                dataGridView1.DataSource = dt;
-                DinhDangDGV();
             }
+                dataGridView1.DataSource = dt;
+            DinhDangDGV();
+        }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi tìm kiếm: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -121,10 +130,11 @@ namespace LTTQ_BTL.Views.MonAn
         {
             try
             {
-                if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.IsNewRow || dataGridView1.SelectedRows.Count == 0)
-                {
-                    return;
-                }
+            if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.IsNewRow || dataGridView1.SelectedRows.Count == 0)
+            {
+                return;
+            }
+            MonAnDao dao = new MonAnDao();
 
                 string maMon = dataGridView1.CurrentRow.Cells[0].Value?.ToString();
                 if (string.IsNullOrEmpty(maMon))
@@ -146,8 +156,8 @@ namespace LTTQ_BTL.Views.MonAn
                 string hinhAnh = row[7]?.ToString() ?? "";
                 pictureBox1.ImageLocation = hinhAnh;
 
-                label2.TextAlign = ContentAlignment.TopCenter;
-            }
+            label2.TextAlign = ContentAlignment.TopCenter;
+        }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi hiển thị chi tiết: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);

@@ -34,8 +34,9 @@ namespace LTTQ_BTL.Views.NguyenLieu
         {
             try
             {
-                NguyenLieuDAO dao = new NguyenLieuDAO();
-                DataTable dt = dao.LayTheoMa(maNL);
+            NguyenLieuDAO dao = new NguyenLieuDAO();
+
+            DataTable dt = dao.LayTheoMa(maNL);
 
                 if (dt.Rows.Count == 0)
                 {
@@ -54,7 +55,7 @@ namespace LTTQ_BTL.Views.NguyenLieu
                 textBox8.Text = row[7]?.ToString() ?? "";
                 textBox9.Text = row[8]?.ToString() ?? "";
 
-                textBox1.ReadOnly = true;
+            textBox1.ReadOnly = true;
                 textBox1.Enabled = false;
 
                 textBox4.ReadOnly = true;
@@ -62,7 +63,7 @@ namespace LTTQ_BTL.Views.NguyenLieu
 
                 textBox6.ReadOnly = true;
                 textBox6.Enabled = false;
-            }
+        }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -77,28 +78,28 @@ namespace LTTQ_BTL.Views.NguyenLieu
                 string donVi = textBox3.Text.Trim();
 
                 if (string.IsNullOrEmpty(tenNguyenLieu) || string.IsNullOrEmpty(donVi))
-                {
+            {
                     MessageBox.Show("Tên và đơn vị không được để trống.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                return;
+            }
 
                 if (!decimal.TryParse(textBox5.Text, out decimal giaNhap) || giaNhap < 0)
-                {
+            {
                     MessageBox.Show("Giá nhập phải là số không âm.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                return;
+            }
 
                 if (!decimal.TryParse(textBox6.Text, out decimal giaBan) || giaBan <= 0)
-                {
+            {
                     MessageBox.Show("Giá bán phải là số dương.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                return;
+            }
 
                 if (!decimal.TryParse(textBox4.Text, out decimal soLuong) || soLuong < 0)
-                {
+            {
                     MessageBox.Show("Số lượng phải là số không âm.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                return;
+            }
 
                 bool ketqua = bll1.SuaNguyenLieu(textBox1.Text, tenNguyenLieu, donVi,
                     soLuong, giaNhap, giaBan, textBox7.Text.Trim(), textBox8.Text.Trim(), textBox9.Text.Trim());
@@ -112,10 +113,12 @@ namespace LTTQ_BTL.Views.NguyenLieu
                     MessageBox.Show("Cập nhật không thành công.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
 
-                FormMain form = (FormMain)this.FindForm();
-                UC_NguyenLieu uc = new UC_NguyenLieu();
-                form.HienThiTrang(uc);
-            }
+            FormMain form = (FormMain)this.FindForm();
+
+            UC_NguyenLieu uc = new UC_NguyenLieu();
+
+            form.HienThiTrang(uc);
+        }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi cập nhật: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);

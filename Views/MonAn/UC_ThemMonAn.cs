@@ -84,6 +84,7 @@ namespace LTTQ_BTL.Views.MonAn
             textBox3.Multiline = true;
             textBox3.WordWrap = true;
 
+
             DataTable dt = bll2.DSNguyenLieuThemMonAn("");
 
             dataGridView2.DataSource = dt;
@@ -153,11 +154,14 @@ namespace LTTQ_BTL.Views.MonAn
         {
             try
             {
-                string ten = textBox6.Text.Trim();
-                DataTable dt = bll2.DSNguyenLieuThemMonAn(ten);
-                dataGridView2.DataSource = dt;
-                DinhDangDGV2();
-            }
+            string ten = textBox6.Text.Trim();
+
+            DataTable dt = bll2.DSNguyenLieuThemMonAn(ten);
+
+            dataGridView2.DataSource = dt;
+
+            DinhDangDGV2();
+        }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi tìm kiếm: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -220,8 +224,8 @@ namespace LTTQ_BTL.Views.MonAn
                 }
 
                 // Kiểm tra nguyên liệu đã tồn tại chưa
-                foreach (DataGridViewRow row in dataGridView1.Rows)
-                {
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
                     if (maNguyenLieu == row.Cells[0].Value?.ToString())
                     {
                         MessageBox.Show("Nguyên liệu này đã được thêm rồi.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -247,21 +251,26 @@ namespace LTTQ_BTL.Views.MonAn
                 {
                     MessageBox.Show("Không tìm thấy thông tin nguyên liệu.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
-                }
-
-                DataRow r = dt.Rows[0];
-                dataGridView1.Rows.Add(
-                    r["MaNguyenLieu"],
-                    r["TenNguyenLieu"],
-                    r["DonViTinh"],
-                    r["DonGiaBan"],
-                    "-",
-                    sl,
-                    "+",
-                    "xóa"
-                );
-                TinhGia();
             }
+            int sl;
+            if (int.TryParse(textBox7.Text, out int soluong)) sl = soluong;
+            else sl = 1;
+
+            if (sl > bll2.LaySoLuong(dataGridView2.CurrentRow.Cells[0].Value.ToString())) return;
+            DataRow r = dt.Rows[0];
+
+            dataGridView1.Rows.Add(
+                r["MaNguyenLieu"],
+                r["TenNguyenLieu"],
+                r["DonViTinh"],
+                r["DonGiaBan"],
+                "-",
+                sl,
+                "+",
+                "xóa"
+            );
+            TinhGia();
+        }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi thêm nguyên liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -278,14 +287,14 @@ namespace LTTQ_BTL.Views.MonAn
                 if (string.IsNullOrEmpty(maMon) || string.IsNullOrEmpty(tenMon))
                 {
                     MessageBox.Show("Mã và tên món ăn không được để trống.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                return;
+            }
 
                 if (comboBox1.SelectedIndex == -1 || comboBox2.SelectedIndex == -1)
-                {
+            {
                     MessageBox.Show("Vui lòng chọn loại và công dụng.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                return;
+            }
 
                 if (!decimal.TryParse(textBox5.Text, out decimal gia) || gia <= 0)
                 {
@@ -308,24 +317,24 @@ namespace LTTQ_BTL.Views.MonAn
                 string duongDanMoi = "";
                 if (anhGoc != "")
                 {
-                    string thuMuc = @"D:\Microsoft VS Code\LTTQ\LTTQ_BTL\Resources\img\";
+            string thuMuc = @"D:\Microsoft VS Code\LTTQ\LTTQ_BTL\Resources\img\";
                     string tenAnh = maMon.Trim() + Path.GetExtension(anhGoc);
                     duongDanMoi = Path.Combine(thuMuc, tenAnh);
-                    File.Copy(anhGoc, duongDanMoi, true);
+            File.Copy(anhGoc, duongDanMoi, true);
                 }
 
                 bll1.ThemMonAn(maMon, tenMon, comboBox2.SelectedValue.ToString(), comboBox1.SelectedValue.ToString(),
                     textBox3.Text.Trim(), textBox4.Text.Trim(), gia, duongDanMoi);
 
-                foreach (DataGridViewRow row in dataGridView1.Rows)
-                {
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
                     if (!decimal.TryParse(row.Cells[5].Value?.ToString() ?? "0", out decimal slNguyenLieu) || slNguyenLieu <= 0)
                     {
                         MessageBox.Show($"Số lượng nguyên liệu '{row.Cells[1].Value}' không hợp lệ.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
                     bll1.ThemNguyenLieuMonAn(maMon.Trim(), row.Cells[0].Value.ToString(), slNguyenLieu);
-                }
+            }
 
                 MessageBox.Show("Thêm món ăn thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 FormMain form = (FormMain)this.FindForm();
