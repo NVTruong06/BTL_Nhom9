@@ -1,5 +1,8 @@
 ﻿using LTTQ_BTL.Dal;
+using OfficeOpenXml;
 using QuanLyNhaHang.DAL;
+using OfficeOpenXml;
+using System.IO;
 using System;
 using System.Data;
 using System.Drawing;
@@ -43,14 +46,17 @@ namespace LTTQ_BTL.Reports.BaoCao
 
             try
             {
-                cboLoaiBaoCao.Items.Clear();
-                cboLoaiBaoCao.Items.Add("Báo cáo doanh thu");
-                cboLoaiBaoCao.Items.Add("Báo cáo nhân sự");
-                cboLoaiBaoCao.SelectedIndex = 0;
+                DataTable dtNhanVien = NhanVienDAL.LayDanhSachNhanVien();
 
-                cboNhanVien.DataSource = NhanVienDAL.LayDanhSachNhanVien();
-                cboNhanVien.DisplayMember = "TenNhanVien";
-                cboNhanVien.ValueMember = "MaNhanVien";
+                DataRow dr = dtNhanVien.NewRow();
+                dr["MaNV"] = "";
+                dr["TenNV"] = "-- Tất cả nhân viên --";
+                dtNhanVien.Rows.InsertAt(dr, 0);
+
+                cboNhanVien.DataSource = dtNhanVien;
+                cboNhanVien.DisplayMember = "TenNV";
+                cboNhanVien.ValueMember = "MaNV";
+
                 cboNhanVien.SelectedIndex = -1;
             }
             catch (Exception ex)
@@ -201,6 +207,37 @@ namespace LTTQ_BTL.Reports.BaoCao
             MessageBox.Show("Đã làm mới dữ liệu báo cáo!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        private void XuatExcel(DataTable dt, string fileName)
+        {
+            ExcelPackage.License.SetNonCommercialPersonal("Hoang Trong Giap");
+
+            using (ExcelPackage package = new ExcelPackage())
+            {
+                ExcelWorksheet ws = package.Workbook.Worksheets.Add("BaoCaoDoanhThu");
+                ws.Cells["A1"].LoadFromDataTable(dt, true);
+
+                using (var range = ws.Cells[1, 1, 1, dt.Columns.Count])
+                {
+                    range.Style.Font.Bold = true;
+                    range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                }
+
+                ws.Cells.AutoFitColumns();
+
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "Excel Files|*.xlsx";
+                saveFileDialog.FileName = fileName + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    FileInfo file = new FileInfo(saveFileDialog.FileName);
+                    package.SaveAs(file);
+                    MessageBox.Show("Xuất file Excel thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
         private void lblTongSoNV_Click(object sender, EventArgs e)
         {
 
@@ -214,6 +251,24 @@ namespace LTTQ_BTL.Reports.BaoCao
         private void cboNhanVien_SelectedIndexChanged(object sender, EventArgs e)
         {
             LoadDanhSachChiTiet();
+        }
+
+        private void btnXuatExcel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DataTable dt = dgvBaoCao.DataSource as DataTable;
+                if (dt == null || dt.Rows.Count == 0)
+                {
+                    MessageBox.Show("Không có dữ liệu để xuất!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                XuatExcel(dt, "BaoCaoQuanLyNhaHang");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi xuất file Excel: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

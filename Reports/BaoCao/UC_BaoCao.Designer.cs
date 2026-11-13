@@ -35,8 +35,6 @@
             dgvBaoCao = new DataGridView();
             btnLamMoi = new Button();
             btnTaoBaoCao = new Button();
-            cboNhanVien = new ComboBox();
-            cboLoaiBaoCao = new ComboBox();
             dtpDenNgay = new DateTimePicker();
             dtpTuNgay = new DateTimePicker();
             label4 = new Label();
@@ -45,6 +43,7 @@
             label1 = new Label();
             groupBox5 = new GroupBox();
             groupBox4 = new GroupBox();
+            btnXuatEccel = new Button();
             chartTyLeGioiTinh = new System.Windows.Forms.DataVisualization.Charting.Chart();
             chartDoanhThu6Thang = new System.Windows.Forms.DataVisualization.Charting.Chart();
             groupBox2 = new GroupBox();
@@ -59,6 +58,8 @@
             panel1 = new Panel();
             groupBox3 = new GroupBox();
             groupBox1 = new GroupBox();
+            cboLoaiBaoCao = new ComboBox();
+            cboNhanVien = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)dgvBaoCao).BeginInit();
             groupBox5.SuspendLayout();
             groupBox4.SuspendLayout();
@@ -87,7 +88,7 @@
             // btnLamMoi
             // 
             btnLamMoi.BackColor = Color.FromArgb(255, 128, 0);
-            btnLamMoi.Location = new Point(260, 266);
+            btnLamMoi.Location = new Point(198, 266);
             btnLamMoi.Margin = new Padding(3, 4, 3, 4);
             btnLamMoi.Name = "btnLamMoi";
             btnLamMoi.Size = new Size(144, 51);
@@ -99,7 +100,7 @@
             // btnTaoBaoCao
             // 
             btnTaoBaoCao.BackColor = SystemColors.Highlight;
-            btnTaoBaoCao.Location = new Point(48, 266);
+            btnTaoBaoCao.Location = new Point(19, 266);
             btnTaoBaoCao.Margin = new Padding(3, 4, 3, 4);
             btnTaoBaoCao.Name = "btnTaoBaoCao";
             btnTaoBaoCao.Size = new Size(146, 51);
@@ -107,25 +108,6 @@
             btnTaoBaoCao.Text = "[ Tạo báo cáo ]";
             btnTaoBaoCao.UseVisualStyleBackColor = false;
             btnTaoBaoCao.Click += btnTaoBaoCao_Click;
-            // 
-            // cboNhanVien
-            // 
-            cboNhanVien.FormattingEnabled = true;
-            cboNhanVien.Location = new Point(156, 195);
-            cboNhanVien.Margin = new Padding(3, 4, 3, 4);
-            cboNhanVien.Name = "cboNhanVien";
-            cboNhanVien.Size = new Size(222, 28);
-            cboNhanVien.TabIndex = 7;
-            // 
-            // cboLoaiBaoCao
-            // 
-            cboLoaiBaoCao.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboLoaiBaoCao.FormattingEnabled = true;
-            cboLoaiBaoCao.Location = new Point(156, 30);
-            cboLoaiBaoCao.Margin = new Padding(3, 4, 3, 4);
-            cboLoaiBaoCao.Name = "cboLoaiBaoCao";
-            cboLoaiBaoCao.Size = new Size(222, 28);
-            cboLoaiBaoCao.TabIndex = 6;
             // 
             // dtpDenNgay
             // 
@@ -194,10 +176,11 @@
             // 
             // groupBox4
             // 
-            groupBox4.Controls.Add(btnLamMoi);
-            groupBox4.Controls.Add(btnTaoBaoCao);
             groupBox4.Controls.Add(cboNhanVien);
             groupBox4.Controls.Add(cboLoaiBaoCao);
+            groupBox4.Controls.Add(btnXuatEccel);
+            groupBox4.Controls.Add(btnLamMoi);
+            groupBox4.Controls.Add(btnTaoBaoCao);
             groupBox4.Controls.Add(dtpDenNgay);
             groupBox4.Controls.Add(dtpTuNgay);
             groupBox4.Controls.Add(label4);
@@ -213,6 +196,17 @@
             groupBox4.TabIndex = 8;
             groupBox4.TabStop = false;
             groupBox4.Text = "BỘ LỌC BÁO CÁO";
+            // 
+            // btnXuatEccel
+            // 
+            btnXuatEccel.BackColor = Color.FromArgb(0, 192, 0);
+            btnXuatEccel.Location = new Point(367, 266);
+            btnXuatEccel.Name = "btnXuatEccel";
+            btnXuatEccel.Size = new Size(158, 51);
+            btnXuatEccel.TabIndex = 10;
+            btnXuatEccel.Text = "Xuất Excel";
+            btnXuatEccel.UseVisualStyleBackColor = false;
+            btnXuatEccel.Click += btnXuatExcel_Click;
             // 
             // chartTyLeGioiTinh
             // 
@@ -380,6 +374,22 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Dashboard";
             // 
+            // cboLoaiBaoCao
+            // 
+            cboLoaiBaoCao.FormattingEnabled = true;
+            cboLoaiBaoCao.Location = new Point(156, 32);
+            cboLoaiBaoCao.Name = "cboLoaiBaoCao";
+            cboLoaiBaoCao.Size = new Size(262, 28);
+            cboLoaiBaoCao.TabIndex = 11;
+            // 
+            // cboNhanVien
+            // 
+            cboNhanVien.FormattingEnabled = true;
+            cboNhanVien.Location = new Point(156, 197);
+            cboNhanVien.Name = "cboNhanVien";
+            cboNhanVien.Size = new Size(262, 28);
+            cboNhanVien.TabIndex = 12;
+            // 
             // UC_BaoCao
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -416,8 +426,6 @@
         private System.Windows.Forms.DataGridView dgvBaoCao;
         private System.Windows.Forms.Button btnLamMoi;
         private System.Windows.Forms.Button btnTaoBaoCao;
-        private System.Windows.Forms.ComboBox cboNhanVien;
-        private System.Windows.Forms.ComboBox cboLoaiBaoCao;
         private System.Windows.Forms.DateTimePicker dtpDenNgay;
         private System.Windows.Forms.DateTimePicker dtpTuNgay;
         private System.Windows.Forms.Label label4;
@@ -440,5 +448,8 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox1;
+        private Button btnXuatEccel;
+        private ComboBox cboLoaiBaoCao;
+        private ComboBox cboNhanVien;
     }
 }

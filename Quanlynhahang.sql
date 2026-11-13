@@ -250,7 +250,7 @@ INSERT INTO MonAn (MaMonAn, TenMonAn, MaCongDung, MaLoai, CachLam, YeuCau, DonGi
 GO
 
 ALTER TABLE MonAn ADD hinhAnh VARCHAR(200);
-
+Go
 
 --nguyen lieu theo ma
 CREATE PROCEDURE sp_LayNguyenLieuTheoMa
